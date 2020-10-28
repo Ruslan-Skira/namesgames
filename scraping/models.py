@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 from django.template.defaultfilters import slugify
 
 
@@ -14,7 +14,6 @@ class People(models.Model):
 
 
 class Employee(models.Model):
-
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     picture_url = models.URLField(max_length=200)
