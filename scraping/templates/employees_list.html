@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+Yemployee
+    {% for yemployee in employees %}
+
+        <a href="{{ yemployee.link }}">{{ yemployee.title }}</a>
+        <br>
+    {% endfor %}
+
+{% endblock content%}
