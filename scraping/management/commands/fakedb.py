@@ -1,7 +1,6 @@
-
-
 from django.core.management.base import BaseCommand, CommandError
-from scraping.tests.factories import company
+
+from scraping.tests.factories.company_factory import CompanyFactory, EmployeeFactory
 
 
 class Command(BaseCommand):
@@ -14,9 +13,9 @@ class Command(BaseCommand):
 
         for number in range(options['companies']):
             try:
-                new_company = company.CompanyFactory()
+                new_company = CompanyFactory()
                 for _ in range(2):
-                    company.EmployeeFactory( company=new_company)
+                    EmployeeFactory(company=new_company)
 
             except Exception as e:
                 raise CommandError(f'Error occur: {e}')
