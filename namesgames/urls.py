@@ -17,14 +17,16 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework import routers
+
+router = routers.DefaultRouter()
 
 urlpatterns = [
-    # path('', include('user.urls')),
+    path('', include(router.urls)),
     path('linkedin_find/', include('scraping.urls')),
     path('admin/', admin.site.urls),
-
-    # path('admin/statuscheck/', include(('celerybeat_status.urls', 'periodic-tasks-status'), namespace='celerybeat_status')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/v1/', include('company.urls')),
 ]
 
 if settings.DEBUG:
@@ -33,3 +35,4 @@ if settings.DEBUG:
     urlpatterns = [
                       path('__debug__/', include(debug_toolbar.urls)),
                   ] + urlpatterns
+urlpatterns += router.urls

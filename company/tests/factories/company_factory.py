@@ -7,19 +7,19 @@ fake = Faker()
 
 class CompanyFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = 'scraping.Company'
+        model = 'company.Company'
         django_get_or_create = (
             'name',
-            'last_parced_at'
+            'last_parsed_at'
         )
 
     name = factory.Sequence(lambda n: fake.unique.name())
-    last_parced_at = faker.date_object()
+    last_parsed_at = faker.date_object()
 
 
 class EmployeeFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = 'scraping.Employee'
+        model = 'company.Employee'
         django_get_or_create = (
             'first_name',
             'last_name',
@@ -42,4 +42,4 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     email = factory.LazyFunction(lambda: faker.email())
     phone_number = factory.LazyFunction(lambda: faker.phone_number()[:17])
     skype = factory.LazyFunction(lambda: faker.word())
-    company = factory.SubFactory(CompanyFactory)
+    # company = factory.SubFactory(CompanyFactory)
