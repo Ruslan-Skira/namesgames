@@ -12,17 +12,31 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+import environ
+
+base = environ.Path(__file__) - 3  # three folders back (/a/b/c/ - 3 = /)
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+
+environ.Env.read_env(env_file=base('.env'))  # reading .env file
+
+# False if not in os.environ
+DEBUG = env('DEBUG')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q2u7-yu3c(^8qnr&wu5@-&6h35bctsk(0k$u+)nu=dy^@m0)jn'
+# SECRET_KEY = 'q2u7-yu3c(^8qnr&wu5@-&6h35bctsk(0k$u+)nu=dy^@m0)jn'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
@@ -42,6 +56,7 @@ LOCAL_APPS = [
     'user',
     'namesgames',
     'scraping',
+    'company',
 ]
 
 THIRD_PARTY_APPS = [
@@ -153,84 +168,23 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
-import logging.config
-
-LOGGING_CONFIG = None
-
-# logging.config.dictConfig({
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'console': {
-#             # exact format is not important, this is the minimum information
-#             'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'console',
-#         },
-#     },
-#     'loggers': {
-#         # root logger
-#         '': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#
-#         },
-#         'django.utils.autoreload': {
-#             'level': 'WARNING',
-#             'handlers': ['console'],
-#
-#         },
-#     },
-# })
-import os
-# DJANGO_LOG_LEVEL = DEBUG
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'file_format',
-        },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            # create file before
-            'filename': '/home/user/Projects/linkedingame/namesgames/namesgames/debug.log',
-            'formatter': 'file_format',
-        },
-    },
-    'loggers': {
-        # root logger
-        '': {
-            'handlers': ['console'],
-            'propagate': True,
-            #'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-        'user.views': {
-            'level': 'INFO',
-            'handlers': ['file', 'console'],
-
-            'propagate': False,
-
-        },
-        'django.utils.autoreload': {
-                'level': 'WARNING',
-                'handlers': ['console'],
-            }
-    },
-    'formatters': {
-        'file_format': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-    }
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES': [],
 }
 
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+SESSION_REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 2,
 
-logging.config.dictConfig(LOGGING)
+    'prefix': 'session',
+    'socket_timeout': 1,
+    'retry_on_timeout': False
+}

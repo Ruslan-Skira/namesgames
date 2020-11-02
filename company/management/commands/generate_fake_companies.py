@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
+import random
 
-from scraping.tests.factories.company_factory import CompanyFactory, EmployeeFactory
+from company.tests.factories.company_factory import CompanyFactory, EmployeeFactory
 
 
 class Command(BaseCommand):
@@ -14,7 +15,7 @@ class Command(BaseCommand):
         for number in range(options['companies']):
             try:
                 new_company = CompanyFactory()
-                for _ in range(2):
+                for _ in range(random.randint(1, 17)):
                     EmployeeFactory(company=new_company)
 
             except Exception as e:
