@@ -50,3 +50,6 @@ LOGGING = {
 }
 
 logging.config.dictConfig(LOGGING)
+
+# linked in client id
+CLIENT_ID = '78zqy8vv1aerst'

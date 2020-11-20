@@ -74,6 +74,7 @@ django-environ = "*"
 python-memcached = "*"
 django-redis-sessions = "*"
 google-api-python-client = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.8"
