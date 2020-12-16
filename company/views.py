@@ -1,12 +1,13 @@
 import logging
 
-from django.http import Http404
-from rest_framework import permissions
+from rest_framework import mixins, permissions
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
-from .models import Company, Employee
+from .permissions import isCompanyOwner
+from .models import Company, User
 from .serializers import CompanySerializer, EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
@@ -16,14 +17,15 @@ logger = logging.getLogger(__name__)
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows employees to be viewed or edited.
+    A simple ViewSet for viewing and editing the accounts
+    associated with the user.
     """
-    queryset = Employee.objects.all()
+    queryset = User.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
-class CompanyViewSet(APIView):
+# TODO: remove
+class OldCompanyViewSet(APIView):
     """
     API endpoint that allows Companies to be viewed or edited.
     """
@@ -34,43 +36,30 @@ class CompanyViewSet(APIView):
         return Response(serializer.data)
 
 
-class CompanyView(APIView):
+# TODO: tests
+class CompanyViewSet(GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     """
     API endpoint that allows Company to be viewed or edited.
     """
+    serializer_class = CompanySerializer
+    queryset = Company.objects.all()
+    lookup_field = 'slug'
+    permission_classes = [isCompanyOwner]
 
-    def get(self, request, slug):
-        logger.info(f'company_visited_from_get {request.session.get("company_visited")}')
-
-        try:
-            company = Company.objects.get(slug=slug)
-            serializer = CompanySerializer(company)
-            save_company_id(request, company)
-            return Response(serializer.data)
-        except Company.DoesNotExist:
-            raise Http404
-
-
-def save_company_id(request, company):
-    """
-    Company id will saved into the user session
-    """
-    company_id = company.id
-    company_visited = request.session.get('company_visited', None)
-    if company_visited and company_id not in company_visited:
-        companies_visited = request.session['company_visited']
-        companies_visited.append(company_id)
-        request.session['company_visited'] = companies_visited
-    else:
-        request.session['company_visited'] = [company_id]
+    # TODO: create, update APIs. It should be accessible only for staff (User.is_staff=True). Maybe use permission class for that
+    # Important:
+    #  * use serializers for input/output
+    #  * make sure they're displayed in Swagger
+    # like https://i.imgur.com/GxRXVZg.png
 
 
+# TODO: remove bellow
 class CompanyEmployeesView(APIView):
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
 
     def get(self, request, slug):
-        company_employees = Employee.objects.filter(company__slug=slug)
+        company_employees = User.objects.filter(company__slug=slug)
         serializer = EmployeeSerializer(company_employees, many=True, context={'request': request})
         return Response(serializer.data)

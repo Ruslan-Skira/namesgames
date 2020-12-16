@@ -1,6 +1,9 @@
-# from django.urls import include, re_path
-# from .views import UserRegistrationView, UsersListView, GetNewsletterView
-#
+from django.urls import include, re_path, path
+from .views import UserRegistrationView, UsersListView, GetNewsletterView
+
+# urlpatterns = [
+#     path('login/', UserLoginView.as_view(), name='login'),
+# ]
 # urlpatterns = [
 #     re_path(r'^newsletter/', GetNewsletterView.as_view(), name='newsletter'),
 #     re_path(r'^registration/', UserRegistrationView.as_view(), name='registration'),

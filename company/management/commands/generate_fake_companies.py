@@ -3,7 +3,7 @@ import random
 
 from company.tests.factories.company_factory import CompanyFactory, EmployeeFactory
 
-
+# TODO: modify to fit new DjangoUser model
 class Command(BaseCommand):
     help = 'Fill up the database by fake data'
 
@@ -22,3 +22,4 @@ class Command(BaseCommand):
                 raise CommandError(f'Error occur: {e}')
 
         self.stdout.write(self.style.SUCCESS(f'{options["companies"]} successfully created companies with employees'))
+# TODO make other file with command trancate all db.To clear all data and fill up it again.

@@ -15,18 +15,50 @@ Including another URLconf
     how it could be????
 """
 from django.conf import settings
+from django.conf.urls import url
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework import routers
+from rest_framework_swagger.views import get_swagger_view
+
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+from company.views import CompanyViewSet
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="namesgames API",
+        default_version='v1',
+        description="Welcome to learning namesgames",
+        terms_of_service="https://www.namesgames.org",
+        contact=openapi.Contact(email="contact@namesgames.org"),
+        license=openapi.License(name="namesgmames IP"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 router = routers.DefaultRouter()
+router.register(r'companies', CompanyViewSet)
+
 
 urlpatterns = [
+    re_path(r'^doc(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),  # <-- Here
+    path('doc/', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),  # <-- Here
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
+         name='schema-redoc'),  # <-- Here
     path('', include(router.urls)),
     path('linkedin_find/', include('scraping.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/v1/', include('company.urls')),
+    # path('api/v1/', include('company.urls')),
+    # path(r'^api/', include(router.urls)),
+    path('api/', include((router.urls, 'company'), namespace='api')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

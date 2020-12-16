@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from .models import Company, Employee
+from .models import Company, User
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Employee
+        model = User
         # company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
         fields = [
             'last_name',
@@ -28,3 +28,8 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
             'slug',
             'last_parsed_at'
         ]
+        # TODO: what for is it used? maybe not needed?
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }

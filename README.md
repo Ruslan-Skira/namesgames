@@ -21,3 +21,7 @@ https://serverfault.com/questions/112795/how-to-run-a-server-on-port-80-as-a-nor
       
       1.6 Stop the server on 4000 port. Or kill it   _sudo kill -9 `sudo lsof -t -i:9001`_
       
+      
+https://www.linkedin.com/oauth/v2/authorization?response_type=code&state=foobar&scope=r_liteprofile&client_id=78zqy8vv1aerst&redirect_uri=http%3A%2F%2Fnamesgames.com%2F   
+
+http://namesgames.com/?code=AQQvYQY0JDA93-rDHmeAIJ5nB1M4wjuX_Cy5i68sEQxwdpMVZIvV08nmgOYSlAKz-THYYt7-Qle9bEkRA6tEV7G_eMhvHQvu39zpToOkZMBQR1-7su7LnHp6nNxBzrTkgkWdfpHgCS9y7_BrnPLcF4CD2ttQVxqgQC4WGBQvni7_FsFsUMI6fsRfZ9rJcA&state=foobar 

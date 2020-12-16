@@ -49,6 +49,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 
 LOCAL_APPS = [
@@ -63,7 +64,48 @@ THIRD_PARTY_APPS = [
     'debug_toolbar',
     'rest_framework',
     'django_celery_beat',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.linkedin',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+    'rest_framework_swagger',
+    'drf_yasg',
 ]
+
+SITE_ID = 1
+# linked in client id
+CLIENT_ID = '78zqy8vv1aerst'
+CLIENT_SECRET = 'rXsVGPpaUGOkO4SO'
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'linkedin': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'SCOPE': [
+            'r_liteprofile',
+            'r_emailaddress',
+        ],
+        'PROFILE_FIELDS': [
+            'id',
+            'first-name',
+            'last-name',
+            'email-address',
+            'picture-url',
+            'public-profile-url',
+        ],
+        'APP': {
+            'client_id': CLIENT_ID,
+            'secret': CLIENT_SECRET,
+            'key': ''
+        }
+    }
+}
+
+
+
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -94,6 +136,14 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'namesgames.wsgi.application'
@@ -172,6 +222,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': [],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 SESSION_ENGINE = 'redis_sessions.session'
@@ -188,3 +239,6 @@ SESSION_REDIS = {
     'socket_timeout': 1,
     'retry_on_timeout': False
 }
+# override the default user model
+AUTH_USER_MODEL = 'company.User'
+
