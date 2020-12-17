@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import User
 from .models import Company
-from .permissions import isCompanyOwner
+from .permissions import IsCompanyOwner
 from .serializers import CompanySerializer, EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
@@ -26,18 +26,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-# TODO: remove
-class OldCompanyViewSet(APIView):
-    """
-    API endpoint that allows Companies to be viewed or edited.
-    """
-
-    def get(self, request):
-        companies = Company.objects.all()
-        serializer = CompanySerializer(companies, many=True)
-        return Response(serializer.data)
-
-
 # TODO: tests
 class CompanyViewSet(GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     """
@@ -46,7 +34,7 @@ class CompanyViewSet(GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModel
     serializer_class = CompanySerializer
     queryset = Company.objects.all()
     lookup_field = 'slug'
-    permission_classes = [isCompanyOwner]
+    permission_classes = [IsCompanyOwner]
 
     # TODO: create, update APIs. It should be accessible only for staff (User.is_staff=True). Maybe use permission class for that
     # Important:

@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
 import random
 
-from company.tests.factories.company_factory import CompanyFactory, EmployeeFactory
+from django.core.management.base import BaseCommand, CommandError
 
-# TODO: modify to fit new DjangoUser model
+from accounts.tests.factories.user_factory import UserFactory
+from company.tests.factories.company_factory import CompanyFactory
+
+
 class Command(BaseCommand):
     help = 'Fill up the database by fake data'
 
@@ -16,8 +18,7 @@ class Command(BaseCommand):
             try:
                 new_company = CompanyFactory()
                 for _ in range(random.randint(1, 17)):
-                    EmployeeFactory(company=new_company)
-
+                    UserFactory(company=new_company)
             except Exception as e:
                 raise CommandError(f'Error occur: {e}')
 
