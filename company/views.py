@@ -6,8 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
+from accounts.models import User
+from .models import Company
 from .permissions import isCompanyOwner
-from .models import Company, User
 from .serializers import CompanySerializer, EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
@@ -23,6 +24,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 # TODO: remove
 class OldCompanyViewSet(APIView):

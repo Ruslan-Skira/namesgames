@@ -58,6 +58,7 @@ LOCAL_APPS = [
     'namesgames',
     'scraping',
     'company',
+    'accounts',
 ]
 
 THIRD_PARTY_APPS = [
@@ -240,5 +241,4 @@ SESSION_REDIS = {
     'retry_on_timeout': False
 }
 # override the default user model
-AUTH_USER_MODEL = 'company.User'
-
+AUTH_USER_MODEL = 'accounts.User'
