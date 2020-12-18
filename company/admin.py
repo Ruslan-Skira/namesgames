@@ -3,6 +3,7 @@ from .models import Company
 
 
 class CompanyAdmin(admin.ModelAdmin):
+
     pass
 
 

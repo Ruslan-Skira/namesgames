@@ -21,7 +21,8 @@ class UserFactory(factory.django.DjangoModelFactory):
             'email',
             'phone_number',
             'skype',
-            'company'
+            'company',
+            'is_company_owner',
         )
 
     first_name = factory.LazyFunction(lambda: faker.name())
