@@ -27,7 +27,6 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('is_company_owner', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
@@ -35,14 +34,10 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         if extra_fields.get('is_active') is not True:
             raise ValueError(_('Superuser must have is_active=True.'))
-        if extra_fields.get('is_company_owner') is not True:
-            raise ValueError(_('Superuser must have is_company_owner=True.'))
 
         return self.create_user(email, password, **extra_fields)
 
 
-# TODO after put it on production could occurs error read it
-#  https://stackoverflow.com/questions/14386536/instantiating-django-model-raises-typeerror-isinstance-arg-2-must-be-a-class
 class User(AbstractUser):
     username = None
     picture_url = models.URLField(max_length=100, blank=True)
@@ -52,8 +47,9 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_regex()], max_length=17, blank=True)
     skype = models.CharField(max_length=50, blank=True)
     email = models.EmailField(_('Email address'), unique=True, blank=True)
-    company = models.ForeignKey('company.Company', related_name='company_employees', on_delete=models.CASCADE, null=True)
-
+    company = models.ForeignKey('company.Company', related_name='company_employees', on_delete=models.CASCADE, null=True) # TODO delete Not cascade save it
+    # TODO look in bd does this model delete all company by sql or django?
+    # if I delete company in db by sql will users deleted too?
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = []

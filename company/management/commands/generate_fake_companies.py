@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from accounts.tests.factories.user_factory import UserFactory
 from company.tests.factories.company_factory import CompanyFactory
 
-
+#TODO create less users 1 company owner and 5 Employees
 class Command(BaseCommand):
     help = 'Fill up the database by fake data'
 
@@ -23,4 +23,4 @@ class Command(BaseCommand):
                 raise CommandError(f'Error occur: {e}')
 
         self.stdout.write(self.style.SUCCESS(f'{options["companies"]} successfully created companies with employees'))
-# TODO make other file with command trancate all db.To clear all data and fill up it again.
+# TODO make other file with command drop all db.To clear all data and fill up it again.

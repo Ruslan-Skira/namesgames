@@ -35,6 +35,21 @@ class CompanyViewSet(GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModel
     queryset = Company.objects.all()
     lookup_field = 'slug'
     permission_classes = [IsCompanyOwner]
+    # TODO if  user do not allow return forbidden 403.
+    # TODO TEst it 1. create company
+    # 2.create owner
+    # 3. get api by owner
+    #4. return company
+    # test2
+    # 1. not company owner
+    #2. return 403
+    #test3
+    #1. User not this company
+
+    #TODO test for list company
+    #1. owner one company, employee second company
+    #1. users should see all the companies from api
+    #2. and not authentificated user should see the all companies.
 
     # TODO: create, update APIs. It should be accessible only for staff (User.is_staff=True). Maybe use permission class for that
     # Important:
@@ -42,6 +57,21 @@ class CompanyViewSet(GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModel
     #  * make sure they're displayed in Swagger
     # like https://i.imgur.com/GxRXVZg.png
 
+    #TODO Crete comapany test
+    # 1. only staff can create company
+    # 2. if it not staff during craating PUT should return 403 response.
+
+
+    # TODO Test it GET api company
+    #  1. create company
+    #  2.create owner
+    #  3. get api by owner
+    #  4. return company
+    # test2
+    # 1. not company owner
+    #2. return 403
+    #test3
+    #1. User not this company
 
 # TODO: remove bellow
 class CompanyEmployeesView(APIView):
