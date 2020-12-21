@@ -29,7 +29,6 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
             'slug',
             'last_parsed_at'
         ]
-        # TODO: what for is it used? maybe not needed?
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}

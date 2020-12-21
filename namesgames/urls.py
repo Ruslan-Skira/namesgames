@@ -46,17 +46,15 @@ router.register(r'companies', CompanyViewSet)
 
 urlpatterns = [
     re_path(r'^doc(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=0), name='schema-json'),  # <-- Here
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('doc/', schema_view.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),  # <-- Here
+         name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
-         name='schema-redoc'),  # <-- Here
+         name='schema-redoc'),
     path('', include(router.urls)),
     path('linkedin_find/', include('scraping.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # path('api/v1/', include('company.urls')),
-    # path(r'^api/', include(router.urls)),
     path('api/', include((router.urls, 'company'), namespace='api')),
     path('accounts/', include('allauth.urls')),
 ]

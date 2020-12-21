@@ -47,9 +47,11 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_regex()], max_length=17, blank=True)
     skype = models.CharField(max_length=50, blank=True)
     email = models.EmailField(_('Email address'), unique=True, blank=True)
-    company = models.ForeignKey('company.Company', related_name='company_employees', on_delete=models.RESTRICT, null=True) # TODO delete Not cascade save it
-    # TODO look in bd does this model delete all company by sql or django?
-    # if I delete company in db by sql will users deleted too?
+    company = models.ForeignKey('company.Company',
+                                related_name='company_employees',
+                                on_delete=models.SET_NULL,
+                                null=True)
+
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = []
