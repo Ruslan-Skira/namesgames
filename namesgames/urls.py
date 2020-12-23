@@ -15,17 +15,12 @@ Including another URLconf
     how it could be????
 """
 from django.conf import settings
-from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path, re_path
-from rest_framework import routers
-from rest_framework_swagger.views import get_swagger_view
-
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
-from company.views import CompanyViewSet
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+from rest_framework import routers
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -41,8 +36,6 @@ schema_view = get_schema_view(
 )
 
 router = routers.DefaultRouter()
-router.register(r'companies', CompanyViewSet)
-
 
 urlpatterns = [
     re_path(r'^doc(?P<format>\.json|\.yaml)$',
@@ -51,11 +44,10 @@ urlpatterns = [
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
          name='schema-redoc'),
-    path('', include(router.urls)),
     path('linkedin_find/', include('scraping.urls')),
-    path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/', include((router.urls, 'company'), namespace='api')),
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('company.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

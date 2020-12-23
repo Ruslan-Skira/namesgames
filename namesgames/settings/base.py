@@ -53,7 +53,6 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api',
     'user',
     'namesgames',
     'scraping',
@@ -72,6 +71,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount.providers.linkedin_oauth2',
     'rest_framework_swagger',
     'drf_yasg',
+    'django_extensions',
 ]
 
 SITE_ID = 1
@@ -104,8 +104,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
-
 
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS

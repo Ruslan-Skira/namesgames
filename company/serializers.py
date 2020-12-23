@@ -12,7 +12,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'last_name',
             'picture_url',
             'position',
-            'profile_url',
             'birthday',
             'email',
             'phone_number',
@@ -29,6 +28,7 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
             'slug',
             'last_parsed_at'
         ]
+        # TODO here was todo to know for what does it need? slug
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}

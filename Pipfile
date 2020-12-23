@@ -78,6 +78,7 @@ django-allauth = "*"
 django-rest-swagger = "*"
 drf-yasg = "*"
 django = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.8"

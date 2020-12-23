@@ -2,7 +2,6 @@ from .base import *
 import logging.config
 
 
-
 DEBUG = True
 LOGGING_CONFIG = None
 
