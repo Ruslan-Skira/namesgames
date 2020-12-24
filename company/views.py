@@ -49,41 +49,12 @@ class CompanyViewSet(
         'destroy': (permissions.IsAdminUser(),),
     }
 
-    # def create(self, request, *args, **kwargs):
-    #     permission_classes = []
-    #     # TODO user Permission classes
-    #     if user_is_staff(self.request.user):
-    #         #
-    #         company_data = request.data
-    #         new_company = Company.objects.create(name=company_data["name"])
-    #         new_company.save()
-    #         serializer = CompanySerializer(new_company)
-    #         return Response(serializer.data)
-    #     raise PermissionDenied
-
-    def destroy(self, request, *args, **kwargs):
-        print('++++++++++++============++++++++++++++++++++++++++++++++')
-        # company_name = request.query_params.get('name')
-        # print(company_name, '+++++++++++++++++==================+++++++++++++++++')
-        if user_is_staff(self.request.user):
-            instance = self.get_object()
-            self.perform_destroy(instance)
-            # company = Company.objects.get(name=company_name)
-            # company.delete()
-            return Response({'message': f"Company has been deleted"})
-        raise PermissionDenied
-
     @action(methods=['get'], detail=True, permission_classes=[IsCompanyEmployee],
             url_path='employees', url_name='employees')
     def get_company_employees(self, request, slug=None):
         company_employees = User.objects.filter(company__slug=slug)
         serializer = EmployeeSerializer(company_employees, many=True, context={'request': request})
         return Response(serializer.data)
-
-    # (SerializerMapMixin,
-    #  mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-    #  mixins.UpdateModelMixin, mixins.ListModelMixin,
-    #  mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
     # TODO if  user do not allow return forbidden 403.
     # TODO TEst it 1. create company

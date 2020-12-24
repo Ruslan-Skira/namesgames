@@ -12,7 +12,6 @@ from company.serializers import CompanySerializer
 from company.tests.factories.UserFactory import UserFactory
 
 
-
 client = APIClient()
 
 
@@ -20,7 +19,6 @@ class GetCompanyTest(TestCase):
     """Test module for GET all companies API"""
 
     def setUp(self):
-        # initialize APIClient app
         self.test_company = Company.objects.create(
             name='TestCompanyAPI', last_parsed_at=datetime.datetime.today())
         self.test_company2 = Company.objects.create(
@@ -29,8 +27,6 @@ class GetCompanyTest(TestCase):
         self.staff = UserFactory(is_staff=True, is_active=True)
 
     def test_get_all_companies(self):
-        # get API response
-        # response = client.get('/companies/')
         response = client.get(reverse('companies-list'))
         companies = Company.objects.all()
         serializer = CompanySerializer(companies, many=True)
@@ -45,16 +41,26 @@ class GetCompanyTest(TestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_create_company(self):
+    def test_get_company_is_company_owner(self):
+        response = client.get(
+            reverse('companies-detail', kwargs={'slug': self.test_company.slug}))
+        company = Company.objects.get(slug=self.test_company.slug)
+        serializer = CompanySerializer(company)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_company_is_staff(self):
         """
         Tests staff create company and check it.
         """
         data = {
-            "name": "Test company 3"
+            "name": "Test company 3",
+            "slug": "test-company-3",
         }
         client.login(email=self.staff.email, password='swordfish')
         response = client.post(reverse('companies-list'), data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # test get company with unauthorized user
         client.logout()
         response = client.get(
             reverse('companies-detail', kwargs={'slug': 'test-company-3'}))
@@ -62,6 +68,20 @@ class GetCompanyTest(TestCase):
         serializer = CompanySerializer(company)
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_company_is_not_staff(self):
+        """
+        Tests staff create company and check it.
+        """
+        data = {
+            "name": "Test company 4",
+            "slug": "test-company-4",
+        }
+        response = client.post(reverse('companies-list'), data=data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = client.get(
+            reverse('companies-detail', kwargs={'slug': 'test-company-4'}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
     # def test_get_invalid_company(self):
