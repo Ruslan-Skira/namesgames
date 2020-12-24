@@ -3,6 +3,16 @@ from rest_framework.permissions import BasePermission
 
 # Utility user/group checkers
 
+class PermissionsMapMixin:
+    permission_classes_map = {}
+
+    def get_permissions(self):
+        action = getattr(self, 'action')
+        perms = self.permission_classes_map.get(action)
+        if perms is None:
+            perms = super(PermissionsMapMixin, self).get_permissions()
+        return perms
+
 
 class IsCompanyOwner(BasePermission):
     def has_object_permission(self, request, view, obj):

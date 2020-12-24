@@ -11,7 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from accounts.models import User
 from .models import Company
-from .permissions import IsCompanyEmployee, user_is_staff
+from .permissions import IsCompanyEmployee, user_is_staff, PermissionsMapMixin
 from .serializers import CompanySerializer, EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
@@ -29,13 +29,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-
-class CompanyViewSet(mixins.CreateModelMixin,
-                   mixins.RetrieveModelMixin,
-                   mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   GenericViewSet):
+class CompanyViewSet(
+                    PermissionsMapMixin,
+                    mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    mixins.ListModelMixin,
+                    GenericViewSet):
     """
     API endpoint that allows Company to be viewed or edited.
     """
@@ -43,14 +44,22 @@ class CompanyViewSet(mixins.CreateModelMixin,
     queryset = Company.objects.all()
     lookup_field = 'slug'
 
-    def create(self, request, *args, **kwargs):
-        if user_is_staff(self.request.user):
-            company_data = request.data
-            new_company = Company.objects.create(name=company_data["name"])
-            new_company.save()
-            serializer = CompanySerializer(new_company)
-            return Response(serializer.data)
-        raise PermissionDenied
+    permission_classes_map = {
+        'create': (permissions.IsAdminUser(),),
+        'destroy': (permissions.IsAdminUser(),),
+    }
+
+    # def create(self, request, *args, **kwargs):
+    #     permission_classes = []
+    #     # TODO user Permission classes
+    #     if user_is_staff(self.request.user):
+    #         #
+    #         company_data = request.data
+    #         new_company = Company.objects.create(name=company_data["name"])
+    #         new_company.save()
+    #         serializer = CompanySerializer(new_company)
+    #         return Response(serializer.data)
+    #     raise PermissionDenied
 
     def destroy(self, request, *args, **kwargs):
         print('++++++++++++============++++++++++++++++++++++++++++++++')
