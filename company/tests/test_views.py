@@ -1,16 +1,12 @@
 import datetime
 
-from django.test import Client, TestCase
-# from django.urls import reverse
-from rest_framework import status
-from rest_framework.reverse import reverse
-from rest_framework.test import APIRequestFactory, APIClient
-
 from company.models import Company
-from accounts.models import User
 from company.serializers import CompanySerializer
 from company.tests.factories.UserFactory import UserFactory
-
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.reverse import reverse
+from rest_framework.test import APIClient
 
 client = APIClient()
 
@@ -36,17 +32,11 @@ class GetCompanyTest(TestCase):
     def test_get_one_company(self):
         response = client.get(
             reverse('companies-detail', kwargs={'slug': self.test_company.slug}))
-        company = Company.objects.get(slug=self.test_company.slug)
-        serializer = CompanySerializer(company)
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_get_company_is_company_owner(self):
-        response = client.get(
-            reverse('companies-detail', kwargs={'slug': self.test_company.slug}))
-        company = Company.objects.get(slug=self.test_company.slug)
-        serializer = CompanySerializer(company)
-        self.assertEqual(response.data, serializer.data)
+        data = {
+            "name": self.test_company.name,
+            "slug": self.test_company.slug,
+        }
+        self.assertGreaterEqual(response.data.items(), data.items())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_company_is_staff(self):
@@ -62,12 +52,9 @@ class GetCompanyTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # test get company with unauthorized user
         client.logout()
-        response = client.get(
-            reverse('companies-detail', kwargs={'slug': 'test-company-3'}))
         company = Company.objects.get(slug='test-company-3')
         serializer = CompanySerializer(company)
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(serializer.data.items(), data.items())
 
     def test_create_company_is_not_staff(self):
         """
@@ -79,24 +66,9 @@ class GetCompanyTest(TestCase):
         }
         response = client.post(reverse('companies-list'), data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_invalid_company(self):
         response = client.get(
-            reverse('companies-detail', kwargs={'slug': 'test-company-4'}))
+            reverse('companies-detail', kwargs={'slug': 'guffy_fail_slug'}
+                    ))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-    # def test_get_invalid_company(self):
-    #     response = client.get(
-    #         reverse('company', kwargs={'slug': 'guffy_fail_slug'}
-    #                 ))
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    #
-    # def test_user_session(self):
-    #     """Test for testing the user session"""
-    #     # TODO clarify why 3 company in the session why not 2?
-    #     client.get(
-    #         reverse('company', kwargs={'slug': self.test_company.slug}))
-    #     client.get(
-    #         reverse('company', kwargs={'slug': self.test_company2.slug}))
-    #
-    #     print(client.session['company_visited'])
-    #     self.assertEqual(len(client.session['company_visited']), 3)

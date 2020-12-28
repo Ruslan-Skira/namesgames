@@ -46,31 +46,9 @@ class CompanyViewSet(
 
     permission_classes_map = {
         'create': (permissions.IsAdminUser(),),
-        'destroy': (permissions.IsAdminUser(),),
     }
 
-    @action(methods=['get'], detail=True, permission_classes=[IsCompanyEmployee],
-            url_path='employees', url_name='employees')
-    def get_company_employees(self, request, slug=None):
-        company_employees = User.objects.filter(company__slug=slug)
-        serializer = EmployeeSerializer(company_employees, many=True, context={'request': request})
-        return Response(serializer.data)
 
-    # TODO if  user do not allow return forbidden 403.
-    # TODO TEst it 1. create company
-    # 2.create owner
-    # 3. get api by owner
-    #4. return company
-    # test2
-    # 1. not company owner
-    #2. return 403
-    #test3
-    #1. User not this company
-
-    #TODO test for list company
-    #1. owner one company, employee second company
-    #1. users should see all the companies from api
-    #2. and not authentificated user should see the all companies.
 
     # TODO: create, update APIs. It should be accessible only for staff (User.is_staff=True). Maybe use permission class for that
     # Important:
