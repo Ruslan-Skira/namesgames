@@ -1,12 +1,13 @@
 import datetime
 
-from company.models import Company
-from company.serializers import CompanySerializer
-from company.tests.factories.UserFactory import UserFactory
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
+
+from company.models import Company
+from company.serializers import CompanySerializer
+from company.tests.factories.UserFactory import UserFactory
 
 client = APIClient()
 
@@ -21,6 +22,9 @@ class GetCompanyTest(TestCase):
             name='TestCompanyAPI2', last_parsed_at=datetime.datetime.today())
 
         self.staff = UserFactory(is_staff=True, is_active=True)
+        self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=1)
+        self.employee_test_company = UserFactory(is_active=True, company=self.test_company)
+        # self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
 
     def test_get_all_companies(self):
         response = client.get(reverse('companies-list'))
@@ -29,6 +33,7 @@ class GetCompanyTest(TestCase):
         self.assertEqual(response.data['results'], serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    # TODO: test 404
     def test_get_one_company(self):
         response = client.get(
             reverse('companies-detail', kwargs={'slug': self.test_company.slug}))
@@ -39,6 +44,7 @@ class GetCompanyTest(TestCase):
         self.assertGreaterEqual(response.data.items(), data.items())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    # TODO test unauthorized
     def test_create_company_is_staff(self):
         """
         Tests staff create company and check it.
@@ -72,3 +78,39 @@ class GetCompanyTest(TestCase):
             reverse('companies-detail', kwargs={'slug': 'guffy_fail_slug'}
                     ))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_company(self):
+        client.force_login(self.company_owner)
+        data = {
+            "name": "updated company",
+            "slug": "updated-company"
+        }
+        response = client.put(
+            reverse('companies-detail', kwargs={'slug': self.test_company.slug}),
+            data=data)
+
+        self.assertGreaterEqual(response.data.items(), data.items())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_company_not_authorized_user(self):
+        data = {
+            "name": "updated company",
+            "slug": "updated-company"
+        }
+        response = client.put(
+            reverse('companies-detail', kwargs={'slug': self.test_company.slug}),
+            data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_company_company_employee(self):
+        client.force_login(self.employee_test_company)
+
+        data = {
+            "name": "updated company",
+            "slug": "updated-company"
+        }
+        response = client.put(
+            reverse('companies-detail', kwargs={'slug': self.test_company.slug}),
+            data=data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

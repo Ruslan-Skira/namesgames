@@ -6,8 +6,8 @@ Linkedin liblrary
 1. `pytest --cov=company --ignore=data --cache-clear  `
 
 New **Access token**
-1. Make redirection from port 80 to port 4000 because Linkedin couldn't register redirect uri with port.
-https://serverfault.com/questions/112795/how-to-run-a-server-on-port-80-as-a-normal-user-on-linux
+1. Make redirection from port 80 to port 4000 because Linkedin couldn't register redirect uri with port. \
+[How to run a server on port 80 as a normal user on Linux?](https://serverfault.com/questions/112795/how-to-run-a-server-on-port-80-as-a-normal-user-on-linux)
 
       1.1 `sudo iptables -t nat -I OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-ports 4000`
       
@@ -22,8 +22,8 @@ https://serverfault.com/questions/112795/how-to-run-a-server-on-port-80-as-a-nor
       1.6 Stop the server on 4000 port. Or kill it   _sudo kill -9 `sudo lsof -t -i:9001`_
       
       
-https://www.linkedin.com/oauth/v2/authorization?response_type=code&state=foobar&scope=r_liteprofile&client_id=78zqy8vv1aerst&redirect_uri=http%3A%2F%2Fnamesgames.com%2F   
+- [linkedin/authorization](https://www.linkedin.com/oauth/v2/authorization?response_type=code&state=foobar&scope=r_liteprofile&client_id=78zqy8vv1aerst&redirect_uri=http%3A%2F%2Fnamesgames.com%2F)   
 
-http://namesgames.com/?code=AQQvYQY0JDA93-rDHmeAIJ5nB1M4wjuX_Cy5i68sEQxwdpMVZIvV08nmgOYSlAKz-THYYt7-Qle9bEkRA6tEV7G_eMhvHQvu39zpToOkZMBQR1-7su7LnHp6nNxBzrTkgkWdfpHgCS9y7_BrnPLcF4CD2ttQVxqgQC4WGBQvni7_FsFsUMI6fsRfZ9rJcA&state=foobar 
+- [namesgames.com](http://namesgames.com/?code=AQQvYQY0JDA93-rDHmeAIJ5nB1M4wjuX_Cy5i68sEQxwdpMVZIvV08nmgOYSlAKz-THYYt7-Qle9bEkRA6tEV7G_eMhvHQvu39zpToOkZMBQR1-7su7LnHp6nNxBzrTkgkWdfpHgCS9y7_BrnPLcF4CD2ttQVxqgQC4WGBQvni7_FsFsUMI6fsRfZ9rJcA&state=foobar) 
 
 - look on all available urls **./manage.py show_urls**  django_extensions

@@ -11,7 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from accounts.models import User
 from .models import Company
-from .permissions import IsCompanyEmployee, user_is_staff, PermissionsMapMixin
+from .permissions import PermissionsMapMixin, IsCompanyOwnerOrAdmin
 from .serializers import CompanySerializer, EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +34,6 @@ class CompanyViewSet(
                     mixins.CreateModelMixin,
                     mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
                     mixins.ListModelMixin,
                     GenericViewSet):
     """
@@ -46,33 +45,10 @@ class CompanyViewSet(
 
     permission_classes_map = {
         'create': (permissions.IsAdminUser(),),
+        'update': (IsCompanyOwnerOrAdmin(),)
     }
 
 
-
-    # TODO: create, update APIs. It should be accessible only for staff (User.is_staff=True). Maybe use permission class for that
-    # Important:
-    #  * use serializers for input/output
-    #  * make sure they're displayed in Swagger
-    # like https://i.imgur.com/GxRXVZg.png
-
-    #TODO Crete comapany test
-    # 1. only staff can create company
-    # 2. if it not staff during craating PUT should return 403 response.
-
-
-    # TODO Test it GET api company
-    #  1. create company
-    #  2.create owner
-    #  3. get api by owner
-    #  4. return company
-    # test2
-    # 1. not company owner
-    #2. return 403
-    #test3
-    #1. User not this company
-
-# TODO: remove bellow
 class CompanyEmployeesView(APIView):
     """
     API endpoint that allows Company Employees to be viewed or edited.
