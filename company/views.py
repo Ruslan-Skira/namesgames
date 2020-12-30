@@ -35,6 +35,7 @@ class CompanyViewSet(
                     mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.ListModelMixin,
+                    mixins.DestroyModelMixin,
                     GenericViewSet):
     """
     API endpoint that allows Company to be viewed or edited.
@@ -45,15 +46,20 @@ class CompanyViewSet(
 
     permission_classes_map = {
         'create': (permissions.IsAdminUser(),),
-        'update': (IsCompanyOwnerOrAdmin(),)
+        'update': (IsCompanyOwnerOrAdmin(),),
+        'destroy': (permissions.IsAdminUser(),),
     }
 
 
 class CompanyEmployeesView(APIView):
+    #TODO viewset
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
-
+    #TODO user
+    # 1. IsCompanyOwnerOrAdmin permission fro CUD
+    # 2.Retrieve use Employee permission
+    # 3. 4.
     def get(self, request, slug):
         company_employees = User.objects.filter(company__slug=slug)
         serializer = EmployeeSerializer(company_employees, many=True, context={'request': request})

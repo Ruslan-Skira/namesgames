@@ -79,6 +79,7 @@ django-rest-swagger = "*"
 drf-yasg = "*"
 django = "*"
 django-extensions = "*"
+arrow = "*"
 
 [requires]
 python_version = "3.8"

@@ -14,17 +14,27 @@ class PermissionsMapMixin:
         return perms
 
 
-class IsCompanyOwnerOrAdmin(BasePermission):
+class IsCompanyEmployeeOrAdmin(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # TODO company_id = obj.company_id
+        # employee_company_id = obj.id
+        # if not error
+
+        return (bool(request.user) and
+                request.user.is_authenticated and
+                request.user.company_id == obj.id
+                )
+
+
+class IsCompanyOwnerOrAdmin(IsCompanyEmployeeOrAdmin):
     """
     Only company Owner can update the Company
     """
 
     def has_object_permission(self, request, view, obj):
-        return (bool(request.user) and
-                request.user.is_authenticated and
-                request.user.is_company_owner and
-                request.user.company_id == obj.id
-                )
+        return \
+            super(IsCompanyOwnerOrAdmin, self).has_object_permission(request, view, obj) \
+            and request.user.is_company_owner
 
 
 class IsCompanyEmployee(BasePermission):
