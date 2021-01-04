@@ -1,17 +1,17 @@
 from rest_framework import serializers
 
-from .models import Company, Employee
+from accounts.models import User
+from .models import Company
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Employee
+        model = User
         # company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
         fields = [
             'last_name',
             'picture_url',
             'position',
-            'profile_url',
             'birthday',
             'email',
             'phone_number',
@@ -28,3 +28,8 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
             'slug',
             'last_parsed_at'
         ]
+        # TODO here was todo to know for what does it need? slug
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }

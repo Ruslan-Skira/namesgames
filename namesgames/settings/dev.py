@@ -2,7 +2,6 @@ from .base import *
 import logging.config
 
 
-
 DEBUG = True
 LOGGING_CONFIG = None
 
@@ -50,3 +49,5 @@ LOGGING = {
 }
 
 logging.config.dictConfig(LOGGING)
+TOKEN_FILE = 'scraping/token.pickle'
+NAMESGAMES_ADDRESS = 'namesgames.com'

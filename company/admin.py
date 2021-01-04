@@ -1,15 +1,17 @@
 from django.contrib import admin
-from .models import Company, Employee
+from .models import Company
 
 
 class CompanyAdmin(admin.ModelAdmin):
-    pass
+    def get_queryset(self, request):
+        qs = self.model.all_objects
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs
 
-
-class EmployeeAdmin(admin.ModelAdmin):
-    pass
+    def delete_model(self, request, obj):
+        obj.hard_delete()
 
 
 admin.site.register(Company, CompanyAdmin)
-admin.site.register(Employee, EmployeeAdmin)
-
