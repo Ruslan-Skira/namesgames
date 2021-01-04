@@ -7,7 +7,7 @@ from .models import Company
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
+        company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
         fields = [
             'last_name',
             'picture_url',
