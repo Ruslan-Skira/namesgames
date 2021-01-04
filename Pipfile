@@ -80,6 +80,7 @@ drf-yasg = "*"
 django = "*"
 django-extensions = "*"
 arrow = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"
