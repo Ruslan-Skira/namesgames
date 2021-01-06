@@ -12,7 +12,8 @@ from company.tests.factories.UserFactory import UserFactory
 client = APIClient()
 
 
-class GetCompanyTest(TestCase):
+@tag('company')
+class CompanyTest(TestCase):
     """Test module for GET all companies API"""
 
     def setUp(self):

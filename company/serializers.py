@@ -5,6 +5,10 @@ from .models import Company
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    """
+    Serializer user querysets.
+    """
+
     class Meta:
         model = User
         company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")

@@ -63,8 +63,8 @@ class EmployeeViewSet(mixins.ListModelMixin, GenericViewSet):
         'by_company': (IsCompanyEmployeeOrAdmin(),),
     }
 
-    @action(detail=False, methods=['get'], url_path='by_company/(?P<company_slug>[^/.]+)')
-    def by_company(self, request, company_slug, pk=None):
+    @action(detail=False, methods=['get'], url_path='by_company/(?P<company_slug>[^/.]+)', url_name='by_company')
+    def by_company(self, request, company_slug: str):
         # https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-parameter-to-actions
         queryset = User.objects.filter(company__slug=company_slug)  # TODO: use denormalized field
 
@@ -82,6 +82,3 @@ class EmployeeViewSet(mixins.ListModelMixin, GenericViewSet):
     lookup_field = 'slug'
 
     queryset = User.objects.all()
-
-
-class CompanyEmployeesView(): ...

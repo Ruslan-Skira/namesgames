@@ -22,7 +22,7 @@ class IsCompanyEmployeeOrAdmin(BasePermission):
 
         return (bool(request.user) and
                 request.user.is_authenticated and
-                request.user.company_id == obj.id
+                request.user.company_id == obj.company_id
                 )
 
 
