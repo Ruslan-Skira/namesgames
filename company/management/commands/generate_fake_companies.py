@@ -22,7 +22,7 @@ class Command(BaseCommand):
             try:
                 new_company = CompanyFactory()
                 UserFactory(company=new_company, is_company_owner=True)
-                for _ in range(random.randint(1, 5)):
+                for _ in range(random.randint(1, 25)):
                     UserFactory(company=new_company, is_company_owner=False)
             except Exception as e:
                 raise CommandError(f'Error occur: {e}')
