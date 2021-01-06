@@ -1,6 +1,6 @@
 import datetime
 
-from django.test import TestCase
+from django.test import tag, TestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
@@ -114,3 +114,60 @@ class GetCompanyTest(TestCase):
             reverse('companies-detail', kwargs={'slug': self.test_company.slug}),
             data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+@tag('employee')
+class EmployeeTest(TestCase):
+    """Test module for GET all companies API"""
+
+    def setUp(self):
+        self.test_company = Company.objects.create(
+            name='TestCompanyAPI', last_parsed_at=datetime.datetime.today())
+        self.test_company2 = Company.objects.create(
+            name='TestCompanyAPI2', last_parsed_at=datetime.datetime.today())
+
+        self.staff = UserFactory(is_staff=True, is_active=True)
+        self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=1)
+        self.employee_test_company = UserFactory(is_active=True, company=self.test_company)
+        # self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
+
+    # TODO write the test1 employee/by_company/<copany_slug>
+
+    def test_get_employees_by_company_slug(self):
+        # from namesgames.urls import router
+        # view = EmployeeViewSet()
+        # view.basename = router.get_default_basename(EmployeeViewSet)
+        # view.request = None
+        # assert view.reverse_action('by_company') == 'blablas'
+
+        client.force_login(self.staff)
+
+        data = [[('last_name', ''),
+                 ('picture_url', ''),
+                 ('position', ''),
+                 ('birthday', None),
+                 ('email', 'Agent 001'),
+                 ('phone_number', ''),
+                 ('skype', ''),
+                 ('company', 1)],
+                [('last_name', ''),
+                 ('picture_url', ''),
+                 ('position', ''),
+                 ('birthday', None),
+                 ('email', 'Agent 002'),
+                 ('phone_number', ''),
+                 ('skype', ''),
+                 ('company', 1)]]
+
+        response = client.get('/api/v1/employees/by_company/testcompanyapi/')
+        print(response.data['results'])
+        # self.assertGreaterEqual(response.data.items(), data.items())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # TODO: test2 list employee/<company_slug> Pemissions
+    #  1. unauthorized user
+    #  2. user Admin
+
+    # TODO: test3 create': (IsCompanyOwnerOrAdmin(),),
+    # TODO: TEST4'update': (IsCompanyOwnerOrAdmin(),),
+    # TODO: TEST5 'destroy': (IsCompanyOwnerOrAdmin(),),

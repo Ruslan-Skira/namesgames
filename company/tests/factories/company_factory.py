@@ -12,9 +12,7 @@ class CompanyFactory(factory.django.DjangoModelFactory):
         django_get_or_create = (
             'name',
             'last_parsed_at',
-            'deleted_at',
         )
 
     name = factory.Sequence(lambda n: fake.unique.name())
     last_parsed_at = faker.date_object()
-    deleted_at = False
