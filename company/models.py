@@ -8,7 +8,6 @@ from namesgames.models import SoftDeletionModel
 
 def _regenerate_field_for_soft_deletion(obj, field_name):
     timestamp = arrow.utcnow().timestamp
-    print(dir(obj.__class__), '---------=========================------------')
     max_length = obj.__class__._meta.get_field(field_name).max_length
     slug_suffix = '-deleted-{}'.format(str(timestamp))
     new_slug = getattr(obj, field_name)
