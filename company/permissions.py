@@ -16,13 +16,10 @@ class PermissionsMapMixin:
 
 class IsCompanyEmployeeOrAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
-        # TODO company_id = obj.company_id
-        # employee_company_id = obj.id
-        # if not error
-
         return (bool(request.user) and
                 request.user.is_authenticated and
-                request.user.company_id == obj.company_id
+                request.user.company_id == obj.company_id or
+                request.user.is_superuser
                 )
 
 
