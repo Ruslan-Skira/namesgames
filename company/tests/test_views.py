@@ -6,7 +6,9 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
 from company.models import Company
+from company.views import EmployeeViewSet
 from company.serializers import CompanySerializer
+from company.tests.base import BaseTestCase
 from company.tests.factories.UserFactory import UserFactory
 
 client = APIClient()
@@ -34,7 +36,6 @@ class CompanyTest(TestCase):
         self.assertEqual(response.data['results'], serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # TODO: test 404
     def test_get_one_company(self):
         response = client.get(
             reverse('companies-detail', kwargs={'slug': self.test_company.slug}))
@@ -45,7 +46,11 @@ class CompanyTest(TestCase):
         self.assertGreaterEqual(response.data.items(), data.items())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # TODO test unauthorized
+    def test_get_one_company_invalid_slug(self):
+        response = client.get(
+            reverse('companies-detail', kwargs={'slug': self.test_company.slug+'invalidslug'}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_create_company_is_staff(self):
         """
         Tests staff create company and check it.
@@ -118,7 +123,7 @@ class CompanyTest(TestCase):
 
 
 @tag('employee')
-class EmployeeTest(TestCase):
+class EmployeeTest(BaseTestCase):
     """Test module for GET all companies API"""
 
     def setUp(self):
@@ -126,49 +131,133 @@ class EmployeeTest(TestCase):
             name='TestCompanyAPI', last_parsed_at=datetime.datetime.today())
         self.test_company2 = Company.objects.create(
             name='TestCompanyAPI2', last_parsed_at=datetime.datetime.today())
+        print(self.test_company2.slug)
 
-        self.staff = UserFactory(is_staff=True, is_active=True)
         self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=1)
         self.employee_test_company = UserFactory(is_active=True, company=self.test_company)
         # self.company_owner = UserFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
+        super().setUp()
 
-    # TODO write the test1 employee/by_company/<copany_slug>
+    def test_get_employees_by_company_valid(self):
+        # client.force_login(self.staff)
+        # client.force_login(self.employee_test_company)
+        client.force_login(self.employee_test_company2)
 
-    def test_get_employees_by_company_slug(self):
-        # from namesgames.urls import router
-        # view = EmployeeViewSet()
-        # view.basename = router.get_default_basename(EmployeeViewSet)
-        # view.request = None
-        # assert view.reverse_action('by_company') == 'blablas'
+        data = [{'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 000',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1},
+                {'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 001',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1}]
 
-        client.force_login(self.staff)
-
-        data = [[('last_name', ''),
-                 ('picture_url', ''),
-                 ('position', ''),
-                 ('birthday', None),
-                 ('email', 'Agent 001'),
-                 ('phone_number', ''),
-                 ('skype', ''),
-                 ('company', 1)],
-                [('last_name', ''),
-                 ('picture_url', ''),
-                 ('position', ''),
-                 ('birthday', None),
-                 ('email', 'Agent 002'),
-                 ('phone_number', ''),
-                 ('skype', ''),
-                 ('company', 1)]]
-
-        response = client.get('/api/v1/employees/by_company/testcompanyapi/')
-        print(response.data['results'])
-        # self.assertGreaterEqual(response.data.items(), data.items())
+        response = client.get(f'/api/v1/employees/by_company/{self.test_company.slug}/', format='json')
+        self.assertEqual(response.json()['results'], data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # TODO: test2 list employee/<company_slug> Pemissions
-    #  1. unauthorized user
-    #  2. user Admin
+    def test_employee_by_company_not_valid_company_slug(self):
+        client.force_login(self.staff)
+        response = client.get('/api/v1/employees/by_company/not-valid-testcompanyapi/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # TODO: test3 create': (IsCompanyOwnerOrAdmin(),),
-    # TODO: TEST4'update': (IsCompanyOwnerOrAdmin(),),
-    # TODO: TEST5 'destroy': (IsCompanyOwnerOrAdmin(),),
+    def test_employee_by_company_not_authorized_user(self):
+        response = client.get('/api/v1/employees/by_company/not-valid-testcompanyapi/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_employee_company_slug_not_valid(self):
+        response = client.get('/api/v1/employees/not-valid-testcompanyapi/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_employee_company_slug_unauthorized(self):
+        response = client.get(f'/api/v1/employees/?company={self.test_company2}/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_employee_company_slug_not_employee(self):
+        client.force_login(self.employee_test_company)
+
+        response = client.get(f'/api/v1/employees/?company={self.test_company2}/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_employee_company_slug_admin(self):
+        client.force_login(self.staff)
+        data = [{'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 001',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1},
+                {'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 000',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1},
+                {'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 002',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': None}]
+
+        response = client.get(f'/api/v1/employees/?company={self.test_company2}/')
+        self.assertEqual(response.json()['results'], data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_employee_company_slug_employee(self):
+        """
+        Company employee couldn't get list of the employees
+        Response will be 403
+        """
+        client.force_login(self.employee_test_company)
+        data = [{'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 001',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1},
+                {'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 000',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': 1},
+                {'last_name': '',
+                 'picture_url': '',
+                 'position': '',
+                 'birthday': None,
+                 'email': 'Agent 002',
+                 'phone_number': '',
+                 'skype': '',
+                 'company': None}]
+
+        response = client.get(f'/api/v1/employees/?company={self.test_company}/')
+
+        self.assertEqual(response.json()['results'], data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_pagination(self):
+        EmployeeViewSet.page_size = 1
+        client.force_login(self.employee_test_company)
+        response = client.get(f'/api/v1/employees/?company={self.test_company}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()['results']), 1)
+
