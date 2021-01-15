@@ -1,22 +1,30 @@
 import logging
 
-from django.shortcuts import get_list_or_404
+from dj_rest_auth.registration.views import RegisterView
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, permissions, status
+from rest_framework import mixins
+from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from accounts.models import User
 from .filters import EmployeeByCompanyFilter
 from .models import Company
-from .permissions import IsCompanyEmployeeOrAdmin, IsCompanyOwnerOrAdmin, PermissionsMapMixin
-from .serializers import CompanySerializer, EmployeeSerializer
+from .permissions import IsCompanyEmployeeOrAdmin
+from .permissions import IsCompanyOwnerOrAdmin
+from .permissions import PermissionsMapMixin
+from .serializers import CompanySerializer
+from .serializers import EmployeeSerializer
+from accounts.models import User
 
 logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+
+class EmployeeRegisterView(RegisterView):
+    queryset = User.objects.all()
 
 
 class CompanyViewSet(PermissionsMapMixin,
@@ -49,7 +57,7 @@ class EmployeePagination(PageNumberPagination):
     max_page_size = 100
 
 
-class EmployeeViewSet(mixins.ListModelMixin, GenericViewSet):
+class EmployeeViewSet(PermissionsMapMixin, mixins.ListModelMixin, GenericViewSet):
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
@@ -64,20 +72,17 @@ class EmployeeViewSet(mixins.ListModelMixin, GenericViewSet):
     # permission_classes = [permissions.IsAdminUser]
     permission_classes_map = {
         'list': (permissions.IsAdminUser(),),
-        # 'by_company': (IsCompanyEmployeeOrAdmin(),),
     }
 
     @action(detail=False, methods=['get'], url_path='by_company/(?P<company_slug>[^/.]+)', url_name='by_company')
     def by_company(self, request, company_slug: str):
+        company = get_object_or_404(Company, slug=company_slug)
+        has_company_permission = IsCompanyEmployeeOrAdmin().has_object_permission(request, self, company)
+        if not has_company_permission:
+            self.permission_denied(
+                request, message='You do not have permission to get all the users by company')
 
-        # TODO: check that current user has permissions to view employees of given company. if not, raise exception (Forbbidden, NotAllowed etc.)
-        #       1. do it yourself
-        #       2. use IsCompanyEmployeeOrAdmin()
-        if request.user.company.slug == company_slug:
-            queryset = get_list_or_404(User, company__slug=company_slug)# TODO: use denormalized field
-
-            employees = self.paginate_queryset(queryset)
-            serializer = EmployeeSerializer(employees, many=True)
-            return self.get_paginated_response(serializer.data)
-        else: Response(status=status.HTTP_403_FORBIDDEN)
-
+        queryset = User.objects.filter(company_id=company.id)
+        employees = self.paginate_queryset(queryset)
+        serializer = EmployeeSerializer(employees, many=True)
+        return self.get_paginated_response(serializer.data)

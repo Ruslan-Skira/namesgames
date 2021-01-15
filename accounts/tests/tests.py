@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from rest_framework.test import APITestCase
 
 
 class UsersManagersTests(TestCase):
@@ -41,7 +42,6 @@ class UsersManagersTests(TestCase):
         self.assertTrue(admin_user.is_active)
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
-        self.assertTrue(admin_user.is_company_owner)
         try:
             # username is None for the AbstractUser option
             # username does not exist for the AbstractBaseUser option
@@ -54,3 +54,19 @@ class UsersManagersTests(TestCase):
                 password='blabla',
                 is_superuser=False
             )
+
+class UsersAPITests(APITestCase):
+    def test_registration_user(self):
+        """
+        Tests user could pass registration with email, password1, password2.
+        """
+    # TODO tests http://localhost:8080/auth/registration/
+    #  1. Registration valid user
+    #  2. Registration with the same user email
+    #  3. Registration with not valid email
+    ...
+
+    def test_login_user(self):
+        """
+        Tests login user """
+        ...

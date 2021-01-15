@@ -81,6 +81,11 @@ django = "*"
 django-extensions = "*"
 arrow = "*"
 django-filter = "*"
+coverage = "*"
+pre-commit = "*"
+reorder-python-imports = "*"
+django-rest-auth = "*"
+dj-rest-auth = "*"
 
 [requires]
 python_version = "3.8"
