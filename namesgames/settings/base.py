@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
 from pathlib import Path
 
 import environ
@@ -62,6 +61,9 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     'debug_toolbar',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     'django_celery_beat',
     'allauth',
     'allauth.account',
@@ -244,5 +246,24 @@ SESSION_REDIS = {
     'socket_timeout': 1,
     'retry_on_timeout': False
 }
+
+#override the drf registration base methods
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_EMAIL_FIELD = 'email'
+ACCOUNT_LOGOUT_ON_GET = True
+
 # override the default user model
 AUTH_USER_MODEL = 'accounts.User'
+
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "company.serializers.EmployeeSerializer",
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "company.serializers.EmployeeRegisterSerializer",
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

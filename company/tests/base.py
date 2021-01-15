@@ -1,10 +1,10 @@
 from django.test import TestCase
+from rest_framework.test import APITestCase
 
-from company.tests.factories.UserFactory import UserFactory
+from accounts.tests.factories.user_factory import EmployeeFactory
 
 
-class BaseTestCase(TestCase):
+class BaseTestCase(APITestCase):
 
     def setUp(self):
-        self.staff = UserFactory(is_staff=True, is_active=True)
-
+        self.staff = EmployeeFactory(is_staff=True, is_active=True)

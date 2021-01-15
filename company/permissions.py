@@ -1,7 +1,8 @@
 from rest_framework.permissions import BasePermission
 
-
+from company.models import Company
 # Utility user/group checkers
+
 
 class PermissionsMapMixin:
     permission_classes_map = {}
@@ -15,10 +16,11 @@ class PermissionsMapMixin:
 
 
 class IsCompanyEmployeeOrAdmin(BasePermission):
-    def has_object_permission(self, request, view, obj):
+
+    def has_object_permission(self, request, view, obj: Company):
         return (bool(request.user) and
                 request.user.is_authenticated and
-                request.user.company_id == obj.company_id or
+                request.user.company_id == obj.id or
                 request.user.is_superuser
                 )
 

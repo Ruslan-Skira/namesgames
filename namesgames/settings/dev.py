@@ -1,5 +1,6 @@
-from .base import *
 import logging.config
+
+from .base import * # NOQA
 
 
 DEBUG = True

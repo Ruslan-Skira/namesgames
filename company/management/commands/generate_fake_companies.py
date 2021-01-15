@@ -1,8 +1,9 @@
 import random
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+from django.core.management.base import CommandError
 
-from accounts.tests.factories.user_factory import UserFactory
+from accounts.tests.factories.user_factory import EmployeeFactory
 from company.tests.factories.company_factory import CompanyFactory
 
 
@@ -21,9 +22,9 @@ class Command(BaseCommand):
         for number in range(options['companies']):
             try:
                 new_company = CompanyFactory()
-                UserFactory(company=new_company, is_company_owner=True)
+                EmployeeFactory(company=new_company, is_company_owner=True)
                 for _ in range(random.randint(1, 25)):
-                    UserFactory(company=new_company, is_company_owner=False)
+                    EmployeeFactory(company=new_company, is_company_owner=False)
             except Exception as e:
                 raise CommandError(f'Error occur: {e}')
 

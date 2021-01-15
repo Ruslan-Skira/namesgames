@@ -1,7 +1,23 @@
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 
-from accounts.models import User
 from .models import Company
+from accounts.models import User
+
+
+class EmployeeRegisterSerializer(RegisterSerializer):
+    """
+    Serializer for registration with email
+    """
+    email = serializers.EmailField(required=True)
+    password1 = serializers.CharField(write_only=True)
+
+    def get_cleaned_data(self):
+        super(EmployeeRegisterSerializer, self).get_cleaned_data()
+        return {
+            'password1': self.validated_data.get('password1', ''),
+            'email': self.validated_data.get('email'),
+        }
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
