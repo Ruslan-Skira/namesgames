@@ -56,6 +56,9 @@ class UsersManagersTests(TestCase):
             )
 
 class UsersAPITests(APITestCase):
+
+    # TODO: Will be covered Later because of creation registration.
+
     def test_registration_user(self):
         """
         Tests user could pass registration with email, password1, password2.
