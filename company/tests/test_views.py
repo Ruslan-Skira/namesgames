@@ -180,7 +180,7 @@ class EmployeeTest(BaseTestCase):
         response = client.get(f'/api/v1/employees/?company={self.test_company2}/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_employee_company_slug_admin(self):
+    def test_get_employees_filter_company(self):
         client.force_login(self.staff)
 
         response = client.get(f'/api/v1/employees/?company={self.test_company}/')
@@ -210,6 +210,11 @@ class EmployeesGetTest(BaseTestCase):
         self.employee_test_company1 = EmployeeFactory(is_active=True, company=self.test_company)
         self.employee_test_company2 = EmployeeFactory(is_active=True, company=self.test_company)
         self.employee_test_company3 = EmployeeFactory(is_active=True, company=self.test_company)
+        self.test_user_data = {
+            "email": "test_user_3@user.com",
+            "password1": "swordfish",
+            "password2": "swordfish",
+        }
 
     def test_get_all_employees(self):
         """
@@ -219,6 +224,16 @@ class EmployeesGetTest(BaseTestCase):
         client.force_login(self.staff)
         response = client.get(f'/api/v1/employees/')
         self.assertEqual(len(response.json()['results']), 4)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_one_user(self):
+        client.force_login(self.staff)
+        """
+        Test GET one employee.
+        """
+
+        response = client.get(f'/api/v1/employees/{self.employee_test_company1.id}/')
+        self.assertEqual(response.data['email'], self.employee_test_company1.email)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_employees_not_valid(self):
