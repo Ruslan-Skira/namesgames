@@ -1,48 +1,13 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 
 from .models import Company
-from accounts.models import User
-
-
-class EmployeeRegisterSerializer(RegisterSerializer):
-    """
-    Serializer for registration with email
-    """
-    email = serializers.EmailField(required=True)
-    password1 = serializers.CharField(write_only=True)
-
-    def get_cleaned_data(self):
-        super(EmployeeRegisterSerializer, self).get_cleaned_data()
-        return {
-            'password1': self.validated_data.get('password1', ''),
-            'email': self.validated_data.get('email'),
-        }
-
-
-class EmployeeSerializer(serializers.ModelSerializer):
-    """
-    Serializer user querysets.
-    """
-
-    class Meta:
-        model = User
-        company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
-        fields = [
-            'last_name',
-            'picture_url',
-            'position',
-            'birthday',
-            'email',
-            'phone_number',
-            'skype',
-            'company'
-        ]
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Company
+        slug = serializers.ReadOnlyField(label='Slug', read_only=True)
+
         fields = [
             'name',
             'slug',
@@ -52,3 +17,5 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
         }
+
+        # TODO: read-only fields (slug) creation company. Test it

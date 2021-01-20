@@ -7,4 +7,5 @@ from accounts.tests.factories.user_factory import EmployeeFactory
 class BaseTestCase(APITestCase):
 
     def setUp(self):
-        self.staff = EmployeeFactory(is_staff=True, is_active=True)
+        super(BaseTestCase, self).setUp()
+        self.staff = EmployeeFactory(is_staff=True, is_active=True, is_superuser=True)

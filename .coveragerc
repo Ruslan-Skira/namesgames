@@ -1,9 +1,28 @@
 [run]
 omit =
   *apps.py,
+  *scraping*,
   *migrations/*,
   *settings*,
+  *management*,
   *tests/*,
   *urls.py,
   *wsgi/*,
-  manage.py
+  *wsgi.py,
+  *asgi.py,
+  *celery.py,
+  manage.py,
+  *venv/*,
+  *venv/bin/*,
+  *venv/include/*,
+  *venv/lig/*,
+  *.env,
+  *__init__*,
+  */__pycache__/*,
+  */site-packages/*,
+  */distutils/*
+
+[report]
+fail_under = 80
+show_missing = True
+skip_covered = True

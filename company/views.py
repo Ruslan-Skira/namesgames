@@ -15,8 +15,8 @@ from .permissions import IsCompanyEmployeeOrAdmin
 from .permissions import IsCompanyOwnerOrAdmin
 from .permissions import PermissionsMapMixin
 from .serializers import CompanySerializer
-from .serializers import EmployeeSerializer
 from accounts.models import User
+from accounts.serializers import EmployeeSerializer
 
 logging.basicConfig(level=logging.INFO)
 
@@ -43,7 +43,7 @@ class CompanyViewSet(PermissionsMapMixin,
 
     permission_classes_map = {
         'create': (permissions.IsAdminUser(),),
-        'update': (IsCompanyOwnerOrAdmin(),),
+        'update': (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin(),),
         'destroy': (permissions.IsAdminUser(),),
     }
 
@@ -52,26 +52,33 @@ class EmployeePagination(PageNumberPagination):
     """
     Pagination for additional by_company method
     """
-    page_size = 1
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 100
 
 
-class EmployeeViewSet(PermissionsMapMixin, mixins.ListModelMixin, GenericViewSet):
+class EmployeeViewSet(PermissionsMapMixin,
+                      mixins.CreateModelMixin,
+                      mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin,
+                      mixins.RetrieveModelMixin,
+                      mixins.ListModelMixin,
+                      GenericViewSet):
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
     queryset = User.objects.all()
     serializer_class = EmployeeSerializer
-    lookup_field = 'slug'
 
     pagination_class = EmployeePagination
     filter_backends = (DjangoFilterBackend,)
     filter_class = EmployeeByCompanyFilter
-
-    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
     permission_classes_map = {
         'list': (permissions.IsAdminUser(),),
+        'retrieve': (IsCompanyEmployeeOrAdmin(),),
+        'update': (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin(),),
+        'delete': (IsCompanyOwnerOrAdmin(),),
     }
 
     @action(detail=False, methods=['get'], url_path='by_company/(?P<company_slug>[^/.]+)', url_name='by_company')
