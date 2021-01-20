@@ -15,14 +15,14 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
-    first_name = factory.LazyFunction(lambda: faker.name())
-    last_name = factory.LazyFunction(lambda: faker.last_name())
-    position = factory.LazyFunction(lambda: faker.job())
-    picture_url = factory.LazyFunction(lambda: faker.url())
+    first_name = factory.LazyFunction(lambda: faker.name()[:40])
+    last_name = factory.LazyFunction(lambda: faker.last_name()[:40])
+    position = factory.LazyFunction(lambda: faker.job()[:40])
+    picture_url = factory.LazyFunction(lambda: faker.url()[:40])
     birthday = factory.LazyFunction(lambda: faker.date_of_birth())
-    email = factory.LazyFunction(lambda: faker.email())
+    email = factory.LazyFunction(lambda: faker.email()[:40])
     phone_number = factory.LazyFunction(lambda: faker.phone_number()[:17])
-    skype = factory.LazyFunction(lambda: faker.word())
+    skype = factory.LazyFunction(lambda: faker.word()[:40])
     password = factory.PostGenerationMethodCall('set_password', 'swordfish')
 
     is_active = True

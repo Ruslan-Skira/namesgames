@@ -1,6 +1,8 @@
 from rest_framework.permissions import BasePermission
 
 from company.models import Company
+
+
 # Utility user/group checkers
 
 
@@ -31,9 +33,7 @@ class IsCompanyOwnerOrAdmin(IsCompanyEmployeeOrAdmin):
     """
 
     def has_object_permission(self, request, view, obj):
-        return \
-            super(IsCompanyOwnerOrAdmin, self).has_object_permission(request, view, obj) \
-            and request.user.is_company_owner
+        return super(IsCompanyOwnerOrAdmin, self).has_object_permission(request, view, obj) or request.user.is_company_owner
 
 
 class IsCompanyEmployee(BasePermission):

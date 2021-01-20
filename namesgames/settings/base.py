@@ -260,10 +260,10 @@ ACCOUNT_LOGOUT_ON_GET = True
 AUTH_USER_MODEL = 'accounts.User'
 
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "company.serializers.EmployeeSerializer",
+    "USER_DETAILS_SERIALIZER": "accounts.serializers.EmployeeSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "company.serializers.EmployeeRegisterSerializer",
+    "REGISTER_SERIALIZER": "accounts.serializers.EmployeeRegisterSerializer",
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
