@@ -27,24 +27,19 @@ class EmployeeRegisterView(RegisterView):
     queryset = User.objects.all()
 
 
-class CompanyViewSet(PermissionsMapMixin,
-                     mixins.CreateModelMixin,
-                     mixins.RetrieveModelMixin,
-                     mixins.UpdateModelMixin,
-                     mixins.ListModelMixin,
-                     mixins.DestroyModelMixin,
-                     GenericViewSet):
+class CompanyViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     """
     API endpoint that allows Company to be viewed or edited.
     """
+
     serializer_class = CompanySerializer
     queryset = Company.objects.all()
-    lookup_field = 'slug'
+    lookup_field = "slug"
 
     permission_classes_map = {
-        'create': (permissions.IsAdminUser(),),
-        'update': (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin(),),
-        'destroy': (permissions.IsAdminUser(),),
+        "create": (permissions.IsAdminUser(),),
+        "update": (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin()),
+        "destroy": (permissions.IsAdminUser(),),
     }
 
 
@@ -52,21 +47,17 @@ class EmployeePagination(PageNumberPagination):
     """
     Pagination for additional by_company method
     """
+
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100
 
 
-class EmployeeViewSet(PermissionsMapMixin,
-                      mixins.CreateModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.RetrieveModelMixin,
-                      mixins.ListModelMixin,
-                      GenericViewSet):
+class EmployeeViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
+
     queryset = User.objects.all()
     serializer_class = EmployeeSerializer
 
@@ -75,19 +66,25 @@ class EmployeeViewSet(PermissionsMapMixin,
     filter_class = EmployeeByCompanyFilter
     permission_classes = [permissions.IsAuthenticated]
     permission_classes_map = {
-        'list': (permissions.IsAdminUser(),),
-        'retrieve': (IsCompanyEmployeeOrAdmin(),),
-        'update': (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin(),),
-        'delete': (IsCompanyOwnerOrAdmin(),),
+        "list": (permissions.IsAdminUser(),),
+        "retrieve": (IsCompanyEmployeeOrAdmin(),),
+        "update": (
+            permissions.IsAuthenticated(),
+            IsCompanyOwnerOrAdmin(),
+        ),
+        "delete": (IsCompanyOwnerOrAdmin(),),
     }
 
-    @action(detail=False, methods=['get'], url_path='by_company/(?P<company_slug>[^/.]+)', url_name='by_company')
+    @action(detail=False, methods=["get"], url_path="by_company/(?P<company_slug>[^/.]+)", url_name="by_company")
     def by_company(self, request, company_slug: str):
+        """
+        Additional endpoint for getting employees by company.
+        """
+
         company = get_object_or_404(Company, slug=company_slug)
         has_company_permission = IsCompanyEmployeeOrAdmin().has_object_permission(request, self, company)
         if not has_company_permission:
-            self.permission_denied(
-                request, message='You do not have permission to get all the users by company')
+            self.permission_denied(request, message="You do not have permission to obtain all company employees.")
 
         queryset = User.objects.filter(company_id=company.id)
         employees = self.paginate_queryset(queryset)
