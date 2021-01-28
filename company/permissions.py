@@ -38,7 +38,11 @@ class IsCompanyOwnerOrAdmin(IsCompanyEmployeeOrAdmin):
         """
         permission to get object has only company owner or admin.
         """
-        return super().has_object_permission(request, view, obj) or request.user.is_company_owner
+
+        return super().has_object_permission(request, view, obj) and request.user.is_company_owner or request.user.is_superuser
+
+
+
 
 
 class IsCompanyEmployee(BasePermission):

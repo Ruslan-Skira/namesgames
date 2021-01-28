@@ -110,6 +110,7 @@ flake8-pytest = "*"
 flake8-string-format = "*"
 flake8-unused-arguments = "*"
 flake8-mutable = "*"
+dictdiffer = "*"
 
 [requires]
 python_version = "3.8"
