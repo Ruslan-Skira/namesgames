@@ -27,22 +27,6 @@ class EmployeeRegisterView(RegisterView):
     queryset = User.objects.all()
 
 
-class CompanyViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.DestroyModelMixin, GenericViewSet):
-    """
-    API endpoint that allows Company to be viewed or edited.
-    """
-
-    serializer_class = CompanySerializer
-    queryset = Company.objects.all()
-    lookup_field = "slug"
-
-    permission_classes_map = {
-        "create": (permissions.IsAdminUser(),),
-        "update": (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin()),
-        "destroy": (permissions.IsAdminUser(),),
-    }
-
-
 class EmployeePagination(PageNumberPagination):
     """
     Pagination for additional by_company method
@@ -53,12 +37,29 @@ class EmployeePagination(PageNumberPagination):
     max_page_size = 100
 
 
+class CompanyViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, mixins.DestroyModelMixin, GenericViewSet):
+    """
+    API endpoint that allows Company to be viewed or edited.
+    """
+
+    serializer_class = CompanySerializer
+    queryset = Company.objects.all()
+    lookup_field = "slug"
+    permission_classes = []
+
+    permission_classes_map = {
+        "create": (permissions.IsAdminUser(),),
+        "update": (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin()),
+        "destroy": (permissions.IsAdminUser(),),
+    }
+
+
 class EmployeeViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     """
     API endpoint that allows Company Employees to be viewed or edited.
     """
 
-    queryset = User.objects.all()
+    queryset = User.employees.all()
     serializer_class = EmployeeSerializer
 
     pagination_class = EmployeePagination
@@ -70,6 +71,7 @@ class EmployeeViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.Updat
         "retrieve": (IsCompanyEmployeeOrAdmin(),),
         "update": (
             permissions.IsAuthenticated(),
+            permissions.IsAdminUser(),
             IsCompanyOwnerOrAdmin(),
         ),
         "delete": (IsCompanyOwnerOrAdmin(),),

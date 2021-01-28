@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from .validators import phone_regex
+from django.db.models import Q
 
 
 class UserManager(BaseUserManager):
@@ -38,6 +39,11 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+class EmployeeManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(Q(is_superuser=True) | Q(company=None))
+
+
 class User(AbstractUser):
     username = None
     picture_url = models.URLField(max_length=100, blank=True)
@@ -56,6 +62,7 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = []
     objects = UserManager()
+    employees = EmployeeManager()
 
     def __str__(self):
         return self.email

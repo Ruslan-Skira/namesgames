@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.contenttypes.models import ContentType
+from dictdiffer import diff
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.settings import settings
@@ -14,11 +15,8 @@ from company.tests.base import BaseTestCase
 client = APIClient()
 
 
-class CompanyTest(BaseTestCase):
-    """Test module for GET all companies API"""
-
+class CompanyCreateTest(BaseTestCase):
     def setUp(self):
-        ContentType.objects.clear_cache()
         super().setUp()
         self.test_company = Company.objects.create(name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today())
         self.test_company2 = Company.objects.create(name="TestCompanyAPI-2", last_parsed_at=datetime.datetime.today())
@@ -26,7 +24,43 @@ class CompanyTest(BaseTestCase):
         self.staff = EmployeeFactory(is_staff=True, is_active=True)
         self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company=self.test_company)
         self.employee_test_company = EmployeeFactory(is_active=True, company=self.test_company)
-        # self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
+
+    def test_create_company_is_staff(self):
+        """
+        Tests staff create company and check it.
+        """
+        data = {
+            "name": "Test company 3",
+        }
+        client.login(email=self.staff.email, password="swordfish")
+        response = client.post(reverse("companies-list"), data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # test get company with unauthorized user
+        client.logout()
+        company = Company.objects.get(slug="test-company-3")
+        serializer = CompanySerializer(company)
+        self.assertGreaterEqual(serializer.data.items(), data.items())
+
+    def test_create_company_is_not_staff(self):
+        """
+        Tests not staff create company and check it.
+        """
+        data = {
+            "name": "Test company 4",
+        }
+        response = client.post(reverse("companies-list"), data=data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class CompanyListTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.test_company = Company.objects.create(name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today())
+        self.test_company2 = Company.objects.create(name="TestCompanyAPI-2", last_parsed_at=datetime.datetime.today())
+
+        self.staff = EmployeeFactory(is_staff=True, is_active=True)
+        self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company=self.test_company)
+        self.employee_test_company = EmployeeFactory(is_active=True, company=self.test_company)
 
     def test_get_all_companies(self):
         response = client.get(reverse("companies-list"))
@@ -34,6 +68,17 @@ class CompanyTest(BaseTestCase):
         serializer = CompanySerializer(companies, many=True)
         self.assertEqual(response.data["results"], serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class CompanyRetrieveTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.test_company = Company.objects.create(name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today())
+        self.test_company2 = Company.objects.create(name="TestCompanyAPI-2", last_parsed_at=datetime.datetime.today())
+
+        self.staff = EmployeeFactory(is_staff=True, is_active=True)
+        self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company=self.test_company)
+        self.employee_test_company = EmployeeFactory(is_active=True, company=self.test_company)
 
     def test_get_one_company(self):
         response = client.get(reverse("companies-detail", kwargs={"slug": self.test_company.slug}))
@@ -48,43 +93,18 @@ class CompanyTest(BaseTestCase):
         response = client.get(reverse("companies-detail", kwargs={"slug": self.test_company.slug + "invalidslug"}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_create_company_is_staff(self):
-        """
-        Tests staff create company and check it.
-        """
-        data = {
-            "name": "Test company 3",
-            "slug": "test-company-3",
-        }
-        client.login(email=self.staff.email, password="swordfish")
-        response = client.post(reverse("companies-list"), data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # test get company with unauthorized user
-        client.logout()
-        company = Company.objects.get(slug="test-company-3")
-        serializer = CompanySerializer(company)
-        self.assertGreaterEqual(serializer.data.items(), data.items())
 
-    # @pytest.mark.django_db(transaction=True)
-    def test_create_company_is_not_staff(self):
-        """
-        Tests not staff create company and check it.
-        """
-        data = {
-            "name": "Test company 4",
-            "slug": "test-company-4",
-        }
-        response = client.post(reverse("companies-list"), data=data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+class CompanyUpdateTest(BaseTestCase):
+    def setUp(self):
+        ContentType.objects.clear_cache()
+        super().setUp()
+        self.test_company = Company.objects.create(name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today())
+        self.test_company2 = Company.objects.create(name="TestCompanyAPI-2", last_parsed_at=datetime.datetime.today())
 
-    def test_get_invalid_company(self):
-        response = client.get(
-            reverse(
-                "companies-detail",
-                kwargs={"slug": "guffy_fail_slug"},
-            )
-        )
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        self.staff = EmployeeFactory(is_staff=True, is_active=True)
+        self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company=self.test_company)
+        self.employee_test_company = EmployeeFactory(is_active=True, company=self.test_company)
+        # self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
 
     def test_update_company(self):
         client.force_login(self.company_owner)
@@ -100,12 +120,32 @@ class CompanyTest(BaseTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_company_employee(self):
+    def test_update_another_company_employee(self):
         client.force_login(self.employee_test_company)
-
         data = {"name": "updated company", "slug": "updated-company"}
         response = client.put(reverse("companies-detail", kwargs={"slug": self.test_company.slug}), data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class CompanyDeleteTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.test_company = Company.objects.create(name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today())
+        self.test_company2 = Company.objects.create(name="TestCompanyAPI-2", last_parsed_at=datetime.datetime.today())
+
+        self.staff = EmployeeFactory(is_staff=True, is_active=True)
+        self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company=self.test_company)
+        self.employee_test_company = EmployeeFactory(is_active=True, company=self.test_company)
+
+    def test_delete_company(self):
+        client.force_login(self.staff)
+
+        response = client.delete(reverse("companies-detail", kwargs={"slug": self.test_company.slug}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_company_not_valid(self):
+        response = client.delete(reverse("companies-detail", kwargs={"slug": self.test_company.slug}))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class EmployeeByCompanyTest(BaseTestCase):
@@ -209,7 +249,7 @@ class EmployeesListTest(BaseTestCase):
         """
         client.force_login(self.staff)
         response = client.get(f"/api/v1/employees/")
-        self.assertEqual(len(response.json()["results"]), 4)
+        self.assertEqual(len(response.json()["results"]), 3)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_one_user(self):
@@ -219,6 +259,7 @@ class EmployeesListTest(BaseTestCase):
         """
 
         response = client.get(f"/api/v1/employees/{self.employee_test_company1.id}/")
+
         self.assertEqual(response.data["email"], self.employee_test_company1.email)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

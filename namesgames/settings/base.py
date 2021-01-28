@@ -232,20 +232,20 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-SESSION_ENGINE = 'redis_sessions.session'
-SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_ENGINE = 'redis_sessions.session'
+# SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
+# SESSION_SAVE_EVERY_REQUEST = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-SESSION_REDIS = {
-    'host': 'localhost',
-    'port': 6379,
-    'db': 2,
-
-    'prefix': 'session',
-    'socket_timeout': 1,
-    'retry_on_timeout': False
-}
+# SESSION_REDIS = {
+#     'host': 'localhost',
+#     'port': 6379,
+#     'db': 2,
+#
+#     'prefix': 'session',
+#     'socket_timeout': 1,
+#     'retry_on_timeout': False
+# }
 
 #override the drf registration base methods
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

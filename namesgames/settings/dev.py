@@ -49,6 +49,6 @@ LOGGING = {
     }
 }
 
-logging.config.dictConfig(LOGGING)
-TOKEN_FILE = 'scraping/token.pickle'
-NAMESGAMES_ADDRESS = 'namesgames.com'
+# logging.config.dictConfig(LOGGING)
+# TOKEN_FILE = 'scraping/token.pickle'
+# NAMESGAMES_ADDRESS = 'namesgames.com'

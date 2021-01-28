@@ -1,3 +1,13 @@
+installation on mac m1
+1. pip install
+2. error with crypto
+ - `brew install pkg-config libffi openssl
+env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" pip install cryptography` 
+   - `pip install cryptography`
+3. error with psyconpg2. 
+   - brew info openssl
+   - and echo the variables from there.
+
 Linkedin liblrary 
 `https://pypi.org/project/linkedin-sdk/`
 
