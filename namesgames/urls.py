@@ -27,7 +27,7 @@ from rest_framework import routers
 schema_view = get_schema_view(
     openapi.Info(
         title="namesgames API",
-        default_version='v1',
+        default_version="v1",
         description="Welcome to learning namesgames",
         terms_of_service="https://www.namesgames.org",
         contact=openapi.Contact(email="contact@namesgames.org"),
@@ -40,26 +40,31 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    re_path(r'^doc(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('doc/', schema_view.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
-         name='schema-redoc'),
-    path('linkedin_find/', include('scraping.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('admin/', admin.site.urls),
-    path('api/v1/', include('company.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('auth/', include('dj_rest_auth.urls')),
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('me/', include('accounts.urls'))
+    re_path(
+        r"^doc(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    path(
+        "doc/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("linkedin_find/", include("scraping.urls")),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("admin/", admin.site.urls),
+    path("api/v1/", include("company.urls")),
+    path("accounts/", include("allauth.urls")),
+    path("auth/", include("dj_rest_auth.urls")),
+    path("auth/registration/", include("dj_rest_auth.registration.urls")),
+    path("me/", include("accounts.urls")),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
-                      path('__debug__/', include(debug_toolbar.urls)),
-                  ] + urlpatterns
+        path("__debug__/", include(debug_toolbar.urls)),
+    ] + urlpatterns
 urlpatterns += router.urls

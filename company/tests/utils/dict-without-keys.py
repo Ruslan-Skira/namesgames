@@ -1,3 +1,0 @@
-def dict_without_keys(data_: dict, keys: list):
-
-    ...
