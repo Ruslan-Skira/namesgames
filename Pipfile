@@ -111,6 +111,10 @@ flake8-string-format = "*"
 flake8-unused-arguments = "*"
 flake8-mutable = "*"
 dictdiffer = "*"
+pytest = "*"
+pytest-django = "*"
+pytest-cov = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"

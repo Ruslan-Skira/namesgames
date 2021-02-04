@@ -41,3 +41,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "company",
             "id",
         ]
+
+
+class AdminEmployeeSerializer(serializers.ModelSerializer):
+    """
+    Serializer Admin Employees querysets.
+    """
+
+    ...

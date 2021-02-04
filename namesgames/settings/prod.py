@@ -1,3 +1,3 @@
-from namesgames.settings.base import * # NOQA
+from namesgames.settings.base import *  # NOQA
 
 DEBUG = False

@@ -1,6 +1,6 @@
 import factory
-from django.utils import timezone
-from faker import Factory, Faker
+from faker import Factory
+from faker import Faker
 
 faker = Factory.create()
 fake = Faker()
@@ -8,10 +8,10 @@ fake = Faker()
 
 class CompanyFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = 'company.Company'
+        model = "company.Company"
         django_get_or_create = (
-            'name',
-            'last_parsed_at',
+            "name",
+            "last_parsed_at",
         )
 
     name = factory.Sequence(lambda n: fake.unique.name())
