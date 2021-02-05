@@ -59,7 +59,7 @@ class CompanyViewSet(
 
     permission_classes_map = {
         "create": (permissions.IsAdminUser(),),
-        "update": (permissions.IsAuthenticated(), IsCompanyOwnerOrAdmin()),
+        "update": (IsCompanyOwnerOrAdmin(),),
         "destroy": (permissions.IsAdminUser(),),
     }
 
@@ -88,16 +88,10 @@ class EmployeeViewSet(
 
     permission_classes_map = {
         "list": (permissions.IsAdminUser(),),
-        "create": (
-            permissions.IsAuthenticated(),
-            IsCompanyOwner(),
-        ),
+        "create": (IsCompanyOwner(),),
         "retrieve": (IsCompanyEmployeeOrAdmin(),),
-        "update": (
-            permissions.IsAuthenticated(),
-            IsCompanyOwnerOrAdmin(),
-        ),
-        "destroy": (permissions.IsAuthenticated(), IsCompanyOwner()),
+        "update": (IsCompanyOwnerOrAdmin(),),
+        "destroy": (IsCompanyOwner(),),
     }
 
     def perform_create(self, serializer):
@@ -144,17 +138,8 @@ class AdminEmployeeViewSet(PermissionsMapMixin, mixins.CreateModelMixin):
     permission_classes = [permissions.IsAuthenticated]
     permission_classes_map = {
         "list": (permissions.IsAdminUser(),),
-        "create": (
-            permissions.IsAuthenticated(),
-            IsCompanyOwnerOrAdmin(),
-        ),
+        "create": (IsCompanyOwnerOrAdmin(),),
         "retrieve": (IsCompanyEmployeeOrAdmin(),),
-        "update": (
-            permissions.IsAuthenticated(),
-            IsCompanyOwnerOrAdmin(),
-        ),
-        "delete": (
-            permissions.IsAuthenticated(),
-            IsCompanyOwnerOrAdmin(),
-        ),
+        "update": (IsCompanyOwnerOrAdmin(),),
+        "delete": (IsCompanyOwnerOrAdmin(),),
     }

@@ -15,12 +15,12 @@ repos:
 #      types: [python]
 
 
-#    - id: autoflake
-#      name: autoflake
-#      entry: autoflake
-#      language: system
-#      types: [python]
-#      args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys]
+    - id: autoflake
+      name: autoflake
+      entry: autoflake
+      language: system
+      types: [python]
+      args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys]
 
 #    - id: flake8
 #      name: flake8
