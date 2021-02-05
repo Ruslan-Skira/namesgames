@@ -56,6 +56,7 @@ LOCAL_APPS = [
     "scraping",
     "company",
     "accounts",
+    "employees",
 ]
 
 THIRD_PARTY_APPS = [
@@ -101,7 +102,6 @@ SOCIALACCOUNT_PROVIDERS = {
         "APP": {"client_id": CLIENT_ID, "secret": CLIENT_SECRET, "key": ""},
     }
 }
-
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 

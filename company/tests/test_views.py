@@ -117,13 +117,13 @@ class CompanyRetrieveTest(BaseTestCase):
             "slug": self.test_company.slug,
         }
         assert (
-            list(
-                diff(
-                    dict_without_keys(response.data, ["last_parsed_at"]),
-                    dict_without_keys(data, []),
+                list(
+                    diff(
+                        dict_without_keys(response.data, ["last_parsed_at"]),
+                        dict_without_keys(data, []),
+                    )
                 )
-            )
-            == []
+                == []
         )
         self.assertGreaterEqual(response.data.items(), data.items())
 
@@ -157,7 +157,6 @@ class CompanyUpdateTest(BaseTestCase):
         self.employee_test_company = EmployeeFactory(
             is_active=True, company=self.test_company
         )
-        # self.company_owner = EmployeeFactory(is_company_owner=True, is_active=True, company_id=self.test_company.id)
 
     def test_update_company(self):
         client.force_login(self.company_owner)
@@ -518,7 +517,7 @@ class EmployeeDeleteTest(BaseTestCase):
         response = client.delete(f"/api/v1/employees/{self.employee_test_company.id}/")
 
         with self.assertRaisesMessage(
-            User.DoesNotExist, "User matching query does not exist."
+                User.DoesNotExist, "User matching query does not exist."
         ):
             User.objects.get(id=self.employee_test_company.id)
 
@@ -539,7 +538,6 @@ class EmployeeDeleteTest(BaseTestCase):
 
         response = client.delete(f"/api/v1/employees/{self.employee_test_company.id}/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
 
 # class AdminEmployeeCreateTest(BaseTestCase):
 #
