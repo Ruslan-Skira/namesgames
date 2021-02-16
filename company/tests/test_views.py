@@ -8,7 +8,7 @@ from rest_framework.settings import settings
 from rest_framework.test import APIClient
 
 from accounts.models import User
-from accounts.serializers import EmployeeSerializer
+from employees.serializers import EmployeeSerializer
 from accounts.tests.factories.user_factory import EmployeeFactory
 from company.models import Company
 from company.serializers import CompanySerializer

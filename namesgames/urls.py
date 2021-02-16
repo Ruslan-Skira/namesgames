@@ -24,6 +24,8 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework import routers
 
+from company.views import AdminEmployeeViewSet
+
 schema_view = get_schema_view(
     openapi.Info(
         title="namesgames API",
@@ -54,12 +56,16 @@ urlpatterns = [
     path("linkedin_find/", include("scraping.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("admin/", admin.site.urls),
-    path("api/v1/", include("company.urls")),
+    path("api/v1/companies/", include("company.urls")),
+    path("api/v1/employees/", include("employees.urls")),
     path("accounts/", include("allauth.urls")),
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", include("dj_rest_auth.registration.urls")),
     path("me/", include("accounts.urls")),
 ]
+
+router.register(r'api/v1/admin/employees', AdminEmployeeViewSet)
+
 
 if settings.DEBUG:
     import debug_toolbar
