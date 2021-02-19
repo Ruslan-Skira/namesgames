@@ -117,6 +117,8 @@ dictdiffer = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
+mock = "*"
+cffi = "*"
 mypy = "*"
 
 [requires]

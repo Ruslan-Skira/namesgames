@@ -27,7 +27,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        company = serializers.HyperlinkedIdentityField(view_name="company:user-detail")
+        company = serializers.HyperlinkedIdentityField(view_name="company:user-detail", read_only=True)
         id = serializers.ReadOnlyField(label="ID", read_only=True)
         fields = [
             "first_name",
@@ -41,3 +41,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "company",
             "id",
         ]
+
+
+class AdminEmployeeSerializer(serializers.ModelSerializer):
+    """
+    Serializer Admin Employees querysets.
+    """
+
+    class Meta:
+        model = User
+        fields = '__all__'
+        # TODO: clarify do I need it here read_only_fields = ('company',) because admin should be able create company.
