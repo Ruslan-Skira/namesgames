@@ -1,14 +1,9 @@
 import logging
 
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework.viewsets import GenericViewSet
 
-from accounts.models import User
-from accounts.serializers import AdminEmployeeSerializer
-from employees.views import EmployeePagination
-from employees.filters import EmployeeByCompanyFilter
 from .models import Company
 from .permissions import IsCompanyOwnerOrAdmin
 from .permissions import PermissionsMapMixin
@@ -41,22 +36,4 @@ class CompanyViewSet(
         "create": (permissions.IsAdminUser(),),
         "update": (IsCompanyOwnerOrAdmin(),),
         "destroy": (permissions.IsAdminUser(),),
-    }
-
-
-class AdminEmployeeViewSet(PermissionsMapMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
-    """
-    API endpoint that allows Company Employees to be viewed or edited.
-    """
-
-    queryset = User.employees.all()
-    serializer_class = AdminEmployeeSerializer
-
-    pagination_class = EmployeePagination
-    filter_backends = (DjangoFilterBackend,)
-    filter_class = EmployeeByCompanyFilter
-    permission_classes = [permissions.IsAuthenticated]
-    permission_classes_map = {
-        "create": (IsCompanyOwnerOrAdmin(),),
-        "update": (IsCompanyOwnerOrAdmin(),),
     }

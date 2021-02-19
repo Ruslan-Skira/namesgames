@@ -11,8 +11,11 @@ class Company(SoftDeletionModel):
     """
 
     name = models.CharField(max_length=50)
-    slug = models.SlugField(_("company slug"), help_text="slug field", unique=True, max_length=100)
+    slug = models.SlugField(
+        _("company slug"), help_text="slug field", unique=True, max_length=100
+    )
     last_parsed_at = models.DateTimeField(auto_now_add=True, help_text="las-modified")
+    employees_count = models.PositiveIntegerField(default=0)
 
     def __str__(self) -> str:
         return self.name

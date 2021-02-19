@@ -53,7 +53,6 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     "namesgames",
-    "scraping",
     "company",
     "accounts",
     "employees",

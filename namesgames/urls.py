@@ -24,7 +24,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework import routers
 
-from company.views import AdminEmployeeViewSet
+from employees.views import AdminEmployeeViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -53,7 +53,6 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path("linkedin_find/", include("scraping.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("admin/", admin.site.urls),
     path("api/v1/companies/", include("company.urls")),
@@ -64,7 +63,7 @@ urlpatterns = [
     path("me/", include("accounts.urls")),
 ]
 
-router.register(r'api/v1/admin/employees', AdminEmployeeViewSet)
+router.register(r"api/v1/admin/employees", AdminEmployeeViewSet, basename='employees')
 
 
 if settings.DEBUG:
