@@ -4,9 +4,6 @@ from accounts.models import User
 from company.models import Company
 
 
-# Utility user/group checkers
-
-
 class PermissionsMapMixin:
     permission_classes_map = {}
 
@@ -20,18 +17,33 @@ class PermissionsMapMixin:
 
 class IsEmployee(BasePermission):
     """
-    Permission check for user in Company
+    Permission check is User Employee or not.
     """
 
     def has_permission(self, request, view):
-        return bool(request.user) \
-               and request.user.is_authenticated \
-               or request.user.is_superuser
+        return bool(request.user) and request.user.is_authenticated and bool(request.user.company)
 
-    def has_object_permission(self, request, view, obj):
-        return super().has_object_permission(request, view, obj) and bool(request.user) \
-               and request.user.is_authenticated \
-               or request.user.is_superuser
+    def has_object_permission(self, request, view, obj: Company or User):
+        """
+        Rewriting base class.
+        """
+        is_authenticated = bool(request.user) and request.user.is_authenticated
+        if isinstance(obj, User):
+            return (
+                    is_authenticated
+                    and (
+                            request.user.company_id == obj.company_id
+                    )
+            )
+        elif isinstance(obj, Company):
+            return (
+                    is_authenticated
+                    and request.user.company_id == obj.id
+            )
+        else:
+            raise Exception(
+                f"Obj: {obj._meta.model_name}is not Company or Employee instance"
+            )
 
 
 class IsCompanyOwner(IsEmployee):
@@ -58,32 +70,14 @@ class IsCompanyEmployeeOrAdmin(IsEmployee):
     """
 
     def has_permission(self, request, view):
-        return super().has_permission(request, view)
+        return (super().has_permission(request, view) or request.user.is_superuser)
 
     def has_object_permission(self, request, view, obj: Company or User):
         """
-        Rewriting base class.
+        Employees or Superuser.
         """
 
-        if isinstance(obj, User):
-            return (
-                    bool(request.user)
-                    and request.user.is_authenticated
-                    and (
-                            request.user.company_id == obj.company_id
-                            or request.user.is_superuser
-                    )
-            )
-        elif isinstance(obj, Company):
-            return (
-                    bool(request.user)
-                    and request.user.is_authenticated
-                    and (request.user.company_id == obj.id or request.user.is_superuser)
-            )
-        else:
-            raise Exception(
-                f"Obj: {obj._meta.model_name}is not Company or Employee instance"
-            )
+        return (super().has_object_permission(request, view, obj) or request.user.is_superuser)
 
 
 class IsCompanyOwnerOrAdmin(IsCompanyOwner):
@@ -98,4 +92,4 @@ class IsCompanyOwnerOrAdmin(IsCompanyOwner):
         """
         permission to get object has only company owner or admin.
         """
-        return super().has_object_permission(request, view, obj) and request.user.is_company_owner or request.user.is_superuser
+        return super().has_object_permission(request, view, obj) or request.user.is_superuser

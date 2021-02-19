@@ -38,8 +38,21 @@ New **Access token**
 
 - look on all available urls **./manage.py show_urls**  django_extensions
 
+
+**How to commit changes in the project**
+COMMIT NAME will consist of  "Idtask  titleOfTheTask: what are you doing in the commit.”
+
+"+" new
+
+"-"fix
+
+"~" change something a little bit. \
+_example_ git commit -m "NAM-10 change permissions: + implemented new permissions ~ was added changes to bla bla bla - fix tests"
 **installation on ubuntu**
 1. pipenv shell
 2. pipenv sync
 
-python manage.py runserver --settings=settings.local
+
+
+CELERY
+start: celery -A tasks worker — loglevel=INFO

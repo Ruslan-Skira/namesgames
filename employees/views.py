@@ -10,12 +10,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import User
-from employees.serializers import EmployeeSerializer
+from employees.serializers import AdminEmployeeSerializer, EmployeeSerializer
 from company.models import Company
 from company.permissions import (
     IsCompanyEmployeeOrAdmin,
     IsCompanyOwner,
-    IsCompanyOwnerOrAdmin,
     PermissionsMapMixin,
 )
 from .filters import EmployeeByCompanyFilter
@@ -59,18 +58,22 @@ class EmployeeViewSet(
     filter_backends = (DjangoFilterBackend,)
     filter_class = EmployeeByCompanyFilter
     permission_classes = [permissions.IsAuthenticated]
-    # TODO: need to be changed the permissions to IsCompanyOwner because Admin have his own endpoint.
 
     permission_classes_map = {
-        "list": (permissions.IsAdminUser(),),
+        "list": (IsCompanyOwner(),),
         "create": (IsCompanyOwner(),),
-        "retrieve": (IsCompanyEmployeeOrAdmin(),),
-        "update": (IsCompanyOwnerOrAdmin(),),
+        "retrieve": (IsCompanyOwner(),),
+        "update": (IsCompanyOwner(),),
         "destroy": (IsCompanyOwner(),),
     }
 
     def perform_create(self, serializer) -> None:
         serializer.save(company_id=self.request.user.company_id)
+
+    def perform_create(self, serializer):
+        if self.request.user.company_id:
+            serializer.save(company_id=self.request.user.company_id)
+        serializer.save()
 
     @action(
         detail=False,
@@ -97,3 +100,24 @@ class EmployeeViewSet(
         employees = self.paginate_queryset(queryset)
         serializer = EmployeeSerializer(employees, many=True)
         return self.get_paginated_response(serializer.data)
+
+
+class AdminEmployeeViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    """
+    API endpoint that allows admin create or update the employees.
+    """
+
+    queryset = User.employees.all()
+    serializer_class = AdminEmployeeSerializer
+
+    pagination_class = EmployeePagination
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = EmployeeByCompanyFilter
+    permission_classes = [permissions.IsAdminUser]

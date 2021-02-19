@@ -12,8 +12,8 @@ class UsersManagersTests(TestCase):
         Positive and negative test case during creating user.
         """
         User = get_user_model()
-        user = User.objects.create_user(email='test1@user.com', password='test123')
-        self.assertEqual(user.email, 'test1@user.com')
+        user = User.objects.create_user(email="test1@user.com", password="test123")
+        self.assertEqual(user.email, "test1@user.com")
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
@@ -27,17 +27,17 @@ class UsersManagersTests(TestCase):
         with self.assertRaises(TypeError):
             User.objects.create_user()
         with self.assertRaises(TypeError):
-            User.objects.create_user(email='')
+            User.objects.create_user(email="")
         with self.assertRaises(ValueError):
-            User.objects.create_user(email='', password='123')
+            User.objects.create_user(email="", password="123")
 
     def test_create_superuser(self) -> None:
         """
         Test create superuser for positive test case and negative testcases.
         """
         User = get_user_model()
-        admin_user = User.objects.create_superuser('testadmin@user.com', 'admintest')
-        self.assertEqual(admin_user.email, 'testadmin@user.com')
+        admin_user = User.objects.create_superuser("testadmin@user.com", "admintest")
+        self.assertEqual(admin_user.email, "testadmin@user.com")
         self.assertTrue(admin_user.is_active)
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
@@ -49,9 +49,7 @@ class UsersManagersTests(TestCase):
             pass
         with self.assertRaises(ValueError):
             User.objects.create_superuser(
-                email='testadmin@user.com',
-                password='blabla',
-                is_superuser=False
+                email="testadmin@user.com", password="blabla", is_superuser=False
             )
 
     def test_soft_delete_user(self) -> None:
@@ -59,7 +57,9 @@ class UsersManagersTests(TestCase):
         Test user marked with deleted at and not showing for other users and company owner.
         """
         User = get_user_model()
-        user = User.objects.create_user(email='delete_user@user.com', password='test123')
+        user = User.objects.create_user(
+            email="delete_user@user.com", password="test123"
+        )
         test_user = User.objects.get(email=user.email)
         self.assertIsNone(test_user.deleted_at)
         test_user.delete()
@@ -67,7 +67,33 @@ class UsersManagersTests(TestCase):
 
     def test_hard_delete_user(self) -> None:
         User = get_user_model()
-        user = User.objects.create_user(email='delete_user@user.com', password='test123')
+        user = User.objects.create_user(
+            email="delete_user@user.com", password="test123"
+        )
+        test_user = User.objects.get(email=user.email)
+        test_user.hard_delete()
+        self.assertTrue(test_user.DoesNotExist)
+        # with self.assertRaises(test_user.DoesNotExist):
+        #     self.assertFalse(User.objects.get(email=user.email))
+
+    def test_soft_delete_user(self) -> None:
+        """
+        Test user marked with deleted at and not showing for other users and company owner.
+        """
+        User = get_user_model()
+        user = User.objects.create_user(
+            email="delete_user@user.com", password="test123"
+        )
+        test_user = User.objects.get(email=user.email)
+        self.assertIsNone(test_user.deleted_at)
+        test_user.delete()
+        self.assertTrue(test_user.deleted_at)
+
+    def test_hard_delete_user(self) -> None:
+        User = get_user_model()
+        user = User.objects.create_user(
+            email="delete_user@user.com", password="test123"
+        )
         test_user = User.objects.get(email=user.email)
         test_user.hard_delete()
         self.assertTrue(test_user.DoesNotExist)

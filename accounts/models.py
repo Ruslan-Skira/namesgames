@@ -1,10 +1,16 @@
+import logging
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 
 from employees.models import EmployeeManager
 from softdelete.models import _regenerate_field_for_soft_deletion, SoftDeletionModel
 from .validators import phone_regex
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager):
@@ -40,6 +46,9 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_active=True.'))
 
         return self.create_user(email, password, **extra_fields)
+
+
+employee_count_update = Signal()
 
 
 class User(SoftDeletionModel, AbstractUser):
