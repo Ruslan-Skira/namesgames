@@ -37,3 +37,6 @@ New **Access token**
 - [namesgames.com](http://namesgames.com/?code=AQQvYQY0JDA93-rDHmeAIJ5nB1M4wjuX_Cy5i68sEQxwdpMVZIvV08nmgOYSlAKz-THYYt7-Qle9bEkRA6tEV7G_eMhvHQvu39zpToOkZMBQR1-7su7LnHp6nNxBzrTkgkWdfpHgCS9y7_BrnPLcF4CD2ttQVxqgQC4WGBQvni7_FsFsUMI6fsRfZ9rJcA&state=foobar) 
 
 - look on all available urls **./manage.py show_urls**  django_extensions
+
+**Installation on Ubuntu**
+1. pipenv shell
