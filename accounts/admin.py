@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 from .models import User
 
 
-
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -44,7 +43,9 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'date_joined', 'is_active', 'is_superuser', 'is_company_owner', 'is_staff')
+        fields = (
+            'email', 'password', 'date_joined', 'is_active', 'is_superuser', 'is_company_owner', 'is_staff',
+            'deleted_at')
 
     def clean_password(self):
         # not in field because it does not have access to the initial value
@@ -61,7 +62,7 @@ class UserAdmin(BaseUserAdmin):
         ('Permissions', {'fields': ('is_superuser', 'is_company_owner')}),
         ('Personal information', {
             'classes': ('collapse',),
-            'fields': ('picture_url', 'position', 'birthday', 'phone_number', 'skype')
+            'fields': ('picture_url', 'position', 'birthday', 'phone_number', 'skype', 'deleted_at')
         }),
 
     )

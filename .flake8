@@ -1,10 +1,10 @@
 [flake8]
 ignore = E203,W503,FI10,FI11,FI12,FI13,FI14,FI15,FI16,FI17,FI58,PT013
-# black
- # E203 whitespace before ':'
- # W503 line break before binary operator
-# flake8-future-import
- # FI10 __future__ import "division" missing
+ black
+  E203 whitespace before ':'
+  W503 line break before binary operator
+ flake8-future-import
+  FI10 __future__ import "division" missing
  # FI11 __future__ import "absolute_import" missing
  # FI12 __future__ import "with_statement" missing
  # FI13 __future__ import "print_function" missing
