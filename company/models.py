@@ -1,20 +1,8 @@
-import arrow
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 
-from namesgames.models import SoftDeletionModel
-
-
-def _regenerate_field_for_soft_deletion(obj, field_name):
-    timestamp = arrow.utcnow().timestamp
-    max_length = obj.__class__._meta.get_field(field_name).max_length
-    slug_suffix = "-deleted-{}".format(str(timestamp))
-    new_slug = getattr(obj, field_name)
-    if len(new_slug) + len(slug_suffix) > max_length:
-        cutoff = max_length - len(slug_suffix)
-        new_slug = obj.slug[:cutoff]
-    return new_slug + slug_suffix
+from softdelete.models import _regenerate_field_for_soft_deletion, SoftDeletionModel
 
 
 class Company(SoftDeletionModel):
@@ -26,7 +14,7 @@ class Company(SoftDeletionModel):
     slug = models.SlugField(_("company slug"), help_text="slug field", unique=True, max_length=100)
     last_parsed_at = models.DateTimeField(auto_now_add=True, help_text="las-modified")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def delete(self, using=None, keep_parents=False):
@@ -39,7 +27,7 @@ class Company(SoftDeletionModel):
         # SoftDeleteModel.delete() saves the object, so no need to save it here.
         return super().delete()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: list, **kwargs: dict) -> None:
         """
         During the save slug will be created from company name.
         """

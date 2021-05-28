@@ -8,13 +8,13 @@ from rest_framework.settings import settings
 from rest_framework.test import APIClient
 
 from accounts.models import User
-from employees.serializers import EmployeeSerializer
 from accounts.tests.factories.user_factory import EmployeeFactory
 from company.models import Company
 from company.serializers import CompanySerializer
 from company.tests.base import BaseTestCase
 from company.tests.factories.company_factory import CompanyFactory
 from company.tests.utils.dict_without_keys import dict_without_keys
+from employees.serializers import EmployeeSerializer
 
 client = APIClient()
 
@@ -512,14 +512,10 @@ class EmployeeDeleteTest(BaseTestCase):
     def test_delete_user_by_company_owner(self):
         client.force_login(self.test_company_owner)
         """
-        Test DELETE should check how admin could delete Employee.
+        Test DELETE should check how company owner could delete Employee.
+        But the employee not hard deleted
         """
         response = client.delete(f"/api/v1/employees/{self.employee_test_company.id}/")
-
-        with self.assertRaisesMessage(
-                User.DoesNotExist, "User matching query does not exist."
-        ):
-            User.objects.get(id=self.employee_test_company.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -538,36 +534,3 @@ class EmployeeDeleteTest(BaseTestCase):
 
         response = client.delete(f"/api/v1/employees/{self.employee_test_company.id}/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-# class AdminEmployeeCreateTest(BaseTestCase):
-#
-#     def setUp(self):
-#         super().setUp()
-#         self.test_user_data = {
-#             "email": "test_user_3@user.com",
-#             "password1": "swordfish",
-#             "password2": "swordfish",
-#         }
-#         self.test_company = CompanyFactory(
-#             name="TestCompanyAPI-1", last_parsed_at=datetime.datetime.today()
-#         )
-#         self.employee_test_company1 = EmployeeFactory(
-#             is_active=True, company=self.test_company
-#         )
-#         self.test_company_owner = EmployeeFactory(
-#             is_active=True, company=self.test_company, is_company_owner=True
-#         )
-#
-#     @skip
-#     def test_create_employee(self):
-#         """
-#         Test check how Admin could create employee.
-#         """
-#         client.force_login(self.staff)
-#
-#         response = client.post("/api/v1/admin/employees/", data=self.test_user_data)
-#         user_db = User.objects.get(email=self.test_user_data['email'])
-#         self.assertGreaterEqual(
-#             list(response.data.items()), list(user_db.items())
-#         )
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

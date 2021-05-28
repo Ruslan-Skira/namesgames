@@ -57,6 +57,7 @@ LOCAL_APPS = [
     "company",
     "accounts",
     "employees",
+    "softdelete",
 ]
 
 THIRD_PARTY_APPS = [

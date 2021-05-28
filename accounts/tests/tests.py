@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from rest_framework.test import APITestCase
 
 
 class UsersManagersTests(TestCase):
@@ -8,7 +7,7 @@ class UsersManagersTests(TestCase):
     User test cases.
     """
 
-    def test_create_user(self):
+    def test_create_user(self) -> None:
         """
         Positive and negative test case during creating user.
         """
@@ -32,7 +31,7 @@ class UsersManagersTests(TestCase):
         with self.assertRaises(ValueError):
             User.objects.create_user(email='', password='123')
 
-    def test_create_superuser(self):
+    def test_create_superuser(self) -> None:
         """
         Test create superuser for positive test case and negative testcases.
         """
@@ -55,21 +54,22 @@ class UsersManagersTests(TestCase):
                 is_superuser=False
             )
 
-class UsersAPITests(APITestCase):
-
-    # TODO: Will be covered Later because of creation registration.
-
-    def test_registration_user(self):
+    def test_soft_delete_user(self) -> None:
         """
-        Tests user could pass registration with email, password1, password2.
+        Test user marked with deleted at and not showing for other users and company owner.
         """
-    # TODO tests http://localhost:8080/auth/registration/
-    #  1. Registration valid user
-    #  2. Registration with the same user email
-    #  3. Registration with not valid email
-    ...
+        User = get_user_model()
+        user = User.objects.create_user(email='delete_user@user.com', password='test123')
+        test_user = User.objects.get(email=user.email)
+        self.assertIsNone(test_user.deleted_at)
+        test_user.delete()
+        self.assertTrue(test_user.deleted_at)
 
-    def test_login_user(self):
-        """
-        Tests login user """
-        ...
+    def test_hard_delete_user(self) -> None:
+        User = get_user_model()
+        user = User.objects.create_user(email='delete_user@user.com', password='test123')
+        test_user = User.objects.get(email=user.email)
+        test_user.hard_delete()
+        self.assertTrue(test_user.DoesNotExist)
+        # with self.assertRaises(test_user.DoesNotExist):
+        #     self.assertFalse(User.objects.get(email=user.email))

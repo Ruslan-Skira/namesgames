@@ -12,7 +12,12 @@ from rest_framework.viewsets import GenericViewSet
 from accounts.models import User
 from employees.serializers import EmployeeSerializer
 from company.models import Company
-from company.permissions import IsCompanyEmployeeOrAdmin, IsCompanyOwner, IsCompanyOwnerOrAdmin, PermissionsMapMixin
+from company.permissions import (
+    IsCompanyEmployeeOrAdmin,
+    IsCompanyOwner,
+    IsCompanyOwnerOrAdmin,
+    PermissionsMapMixin,
+)
 from .filters import EmployeeByCompanyFilter
 
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +69,7 @@ class EmployeeViewSet(
         "destroy": (IsCompanyOwner(),),
     }
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
         serializer.save(company_id=self.request.user.company_id)
 
     @action(

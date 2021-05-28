@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from employees.models import EmployeeManager
+from softdelete.models import _regenerate_field_for_soft_deletion, SoftDeletionModel
 from .validators import phone_regex
 
 
@@ -41,7 +42,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractUser):
+class User(SoftDeletionModel, AbstractUser):
     username = None
     picture_url = models.URLField(max_length=100, blank=True)
     position = models.CharField(max_length=50, blank=True)
@@ -57,12 +58,22 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: list = []
     objects = UserManager()
     employees = EmployeeManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
+
+    def delete(self, using=None, keep_parents=False):
+        """
+        Rewrite delete method to soft delete method.
+        """
+
+        # Rewrite email user to prevent collisions
+        self.email = _regenerate_field_for_soft_deletion(self, "email")
+        # SoftDeleteModel.delete() saves the object, so no need to save it here.
+        return super().delete()
 
     class Meta:
         ordering = ['company']
