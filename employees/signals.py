@@ -11,8 +11,24 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver([post_save, post_delete], sender=User, dispatch_uid=uuid.uuid4())
-def employee_create_handler(instance=None, update_fields=None, **kwargs) -> None:
+@receiver(post_save, sender=User, dispatch_uid=uuid.uuid4())
+def employee_create_handler(
+    instance=None, created=True, update_fields=None, **kwargs
+) -> None:
+    """
+    User post save  signal.
+    """
+    company = instance.company
+    logger.info(update_fields, kwargs)
+    if company and created:
+        company_employees_counter.delay(company.id)
+
+
+@receiver(post_delete, sender=User, dispatch_uid=uuid.uuid4())
+def employee_delete_handler(instance=None, update_fields=None, **kwargs) -> None:
+    """
+    User post delete signal.
+    """
     company = instance.company
     logger.info(update_fields, kwargs)
     if company:
