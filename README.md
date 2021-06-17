@@ -41,3 +41,5 @@ New **Access token**
 **installation on ubuntu**
 1. pipenv shell
 2. pipenv sync
+
+python manage.py runserver --settings=settings.local

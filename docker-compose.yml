@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+#    command: bash -c "python /opt/app/manage.py migrate --noinput && python /opt/app/manage.py runserver 0.0.0.0:8000"
     command: python manage.py runserver 127.0.0.1:8000
     volumes:
       - .:/opt/app
