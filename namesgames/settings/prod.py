@@ -12,3 +12,5 @@ DATABASES = {
         "PORT": 5432,
     }
 }
+
+CELERY_BROKER_URL = "rabbitmq3"

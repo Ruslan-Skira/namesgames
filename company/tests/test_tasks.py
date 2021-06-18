@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from accounts.models import User
 from company.models import Company
-from company.tasks import company_employees_counter
+from company.tasks import count_company_employees
 
 
 class CompanyEmployeesCounterTask(TestCase):
@@ -26,13 +26,13 @@ class CompanyEmployeesCounterTask(TestCase):
 
     def test_company_employees_counter(self):
         """
-        Test check that company_employees_counter updates.
+        Test check that count_company_employees updates.
         """
-        company_employees_counter(self.test_company.id)
+        count_company_employees(self.test_company.id)
         company_test = Company.objects.get(name="TestCompanyModel1")
         employee_test = User.objects.get(company=company_test)
 
         self.assertEqual(company_test.employees_count, 1)
         employee_test.delete()
-        company_employees_counter(company_test.id)
+        count_company_employees(company_test.id)
         self.assertEqual(company_test.employees_count, 1)
