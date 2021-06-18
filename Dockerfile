@@ -1,6 +1,5 @@
 # Setup base image
-FROM python:3.8-slim
-#FROM python:3.8-slim AS base
+FROM python:3.8
 
 # Set work directory
 WORKDIR /opt/app
