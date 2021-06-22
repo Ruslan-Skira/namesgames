@@ -6,5 +6,3 @@ class EmployeesConfig(AppConfig):
 
     def ready(self):
         import employees.signals  # noqa
-
-

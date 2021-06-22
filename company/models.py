@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 
+from accounts.models import User
 from softdelete.models import _regenerate_field_for_soft_deletion, SoftDeletionModel
 
 
@@ -37,6 +38,12 @@ class Company(SoftDeletionModel):
 
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def all_employees(self) -> None:
+        """
+        Method return all employees.
+        """
+        return User.all_employees.filter(company=self.id)
 
     class Meta:
         ordering = ["last_parsed_at"]
