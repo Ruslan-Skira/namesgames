@@ -21,7 +21,8 @@ def employee_create_handler(
     company = instance.company
     if company and created:
         logger.info(
-            "New employee is created. Scheduling the task to recalculate employee_count",
+            f"New employee {instance.email} is created. "
+            f"Scheduling the task to recalculate employee_count",
             update_fields,
             kwargs,
         )

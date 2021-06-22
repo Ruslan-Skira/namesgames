@@ -32,7 +32,7 @@ class CompanyTest(TestCase):
         self.assertEqual(company_test.name, "TestCompanyModel1")
         self.assertEqual(employee_test.first_name, "test_name")
 
-    @patch("employees.signals.count_company_employees.delay")
+    @patch("softdelete.receivers.count_company_employees.delay")
     def test_company_employee_counter(self, counter) -> None:
         """
         Test wil check employee counter after assign employee.

@@ -7,7 +7,7 @@ from django.utils import timezone
 def _regenerate_field_for_soft_deletion(obj, field_name):
     timestamp = arrow.utcnow().timestamp()
     max_length = obj.__class__._meta.get_field(field_name).max_length
-    slug_suffix = "-deleted-{}".format(str(timestamp))
+    slug_suffix = f"-deleted-{str(timestamp)}"
     new_slug = getattr(obj, field_name)
     if len(new_slug) + len(slug_suffix) > max_length:
         cutoff = max_length - len(slug_suffix)
@@ -22,7 +22,7 @@ class SoftDeletionManager(models.Manager):
 
     def get_queryset(self):
         if self.alive_only:
-            return SoftDeletionQuerySet(self.model).filter(deleted_at=None)
+            return SoftDeletionQuerySet(self.model).is_alive
         return SoftDeletionQuerySet(self.model)
 
     def hard_delete(self):
@@ -52,8 +52,10 @@ class SoftDeletionQuerySet(QuerySet):
     def hard_delete(self):
         return super(SoftDeletionQuerySet).delete()
 
-    def alive(self):
+    @property
+    def is_alive(self):
         return self.filter(deleted_at=None)
 
-    def dead(self):
+    @property
+    def is_dead(self):
         return self.exclude(deleted_at=None)
