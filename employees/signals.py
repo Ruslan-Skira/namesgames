@@ -37,7 +37,7 @@ def employee_delete_handler(instance=None, update_fields=None, **kwargs) -> None
     company = instance.company
     if company:
         logger.info(
-            "Employee is deleted. Scheduling the task to recalculate employee_count",
+            f"Employee {instance.email} is deleted. Scheduling the task to recalculate employee_count",
             update_fields,
             kwargs,
         )
