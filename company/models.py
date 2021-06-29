@@ -43,7 +43,7 @@ class Company(SoftDeletionModel):
         """
         Method return all employees.
         """
-        return User.all_employees.filter(company=self.id)
+        return User.all_objects.filter(company=self.id)
 
     class Meta:
         ordering = ["last_parsed_at"]
