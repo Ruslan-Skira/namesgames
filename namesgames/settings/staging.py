@@ -1,6 +1,6 @@
 from namesgames.settings.base import *  # NOQA
 
-DEBUG = 1
+DEBUG = True
 
 DATABASES = {
     "default": {

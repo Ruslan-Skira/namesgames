@@ -118,6 +118,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env*
 .venv
 env/
 venv/
@@ -239,4 +240,6 @@ modules.xml
 # Sonarlint plugin
 .idea/sonarlint
 
+# Temp files
+temp/
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all,django
