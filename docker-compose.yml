@@ -14,7 +14,7 @@ services:
       - db
       - redis
       - rabbitmq3
-      - worker
+
     env_file:
       - ./.env.prod
   worker:
@@ -23,6 +23,7 @@ services:
     volumes:
       - .:/opt/app
     depends_on:
+      - web
       - db
       - redis
       - rabbitmq3
