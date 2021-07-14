@@ -16,6 +16,9 @@ services:
       - rabbitmq3
     env_file:
       - ./.env
+    networks:
+      - namesgames
+
   celery:
     build: .
     command: celery -A namesgames worker -l info
@@ -25,6 +28,8 @@ services:
       - db
       - redis
       - rabbitmq3
+    networks:
+      - namesgames
 
   db:
     restart: always
@@ -33,8 +38,9 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
-    volumes:
-      - ~/Projects/linkedingame/namesgames/data:/var/lib/postgresql/data
+    networks:
+      - namesgames
+
   rabbitmq3:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -48,7 +54,15 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
       RABBITMQ_DEFAULT_VHOST: /
+    networks:
+      - namesgames
 
   redis:
     container_name: redis
     image: redis:3.2-alpine
+    networks:
+      - namesgames
+
+networks:
+  namesgames:
+    driver: bridge
