@@ -48,3 +48,13 @@ LOGGING = {
 # logging.config.dictConfig(LOGGING)
 # TOKEN_FILE = 'scraping/token.pickle'
 # NAMESGAMES_ADDRESS = 'namesgames.com'
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "namesgames",
+        "USER": "postgres",
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": 5432,
+    }
+}

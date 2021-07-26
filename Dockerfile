@@ -23,20 +23,5 @@ COPY Pipfile /opt/app/
 COPY Pipfile.lock /opt/app/
 RUN pipenv install --dev --system --deploy --ignore-pipfile
 
-#FROM base AS runtime
-
-# Copy virtual env from python-deps stage
-#COPY --from=python-deps /.venv /opt/app/.venv
-#ENV PATH=" /opt/app/.venv/bin:$PATH"
-
-# Create and switch to a new user
-#RUN useradd --create-home appuser
-#WORKDIR /home/appuser
-#USER appuser
-
 # Install application into container
 COPY . /opt/app/
-
-## Run the application
-#ENTRYPOINT ["python", "-m", "http.server"]
-#CMD ["--directory", ".", "8000"]
