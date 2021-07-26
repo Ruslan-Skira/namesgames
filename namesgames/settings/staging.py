@@ -14,3 +14,5 @@ DATABASES = {
 }
 
 CELERY_BROKER_URL = "rabbitmq3"
+
+ALLOWED_HOSTS=['*']
