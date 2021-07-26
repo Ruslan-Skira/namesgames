@@ -10,7 +10,6 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - redis
       - rabbitmq3
     env_file:
@@ -23,19 +22,8 @@ services:
     command: celery -A namesgames worker -l info
 
     depends_on:
-      - db
       - redis
       - rabbitmq3
-    networks:
-      - namesgames
-
-  db:
-    restart: always
-    image: postgres:12
-    environment:
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
     networks:
       - namesgames
 

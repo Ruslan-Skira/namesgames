@@ -6,9 +6,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "namesgames",
-        "USER": "postgres",
-        "PASSWORD": "password",
-        "HOST": "db",
+        "USER": "namesgames_admin",
+        "PASSWORD": "1q2w3e4r5t6y",
+        "HOST": "namesgames.c0a07epeefme.us-east-2.rds.amazonaws.com",
         "PORT": 5432,
     }
 }
