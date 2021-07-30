@@ -25,3 +25,5 @@ RUN pipenv install --dev --system --deploy --ignore-pipfile
 
 # Install application into container
 COPY . /opt/app/
+
+EXPOSE 8000
