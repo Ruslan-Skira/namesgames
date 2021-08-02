@@ -64,8 +64,8 @@ THIRD_PARTY_APPS = [
 
 SITE_ID = 1
 # linked in client id
-CLIENT_ID = "78zqy8vv1aerst"
-CLIENT_SECRET = "rXsVGPpaUGOkO4SO"
+CLIENT_ID = env.str("CLIENT_ID")
+CLIENT_SECRET = env.str("CLIENT_SECRET")
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
@@ -119,6 +119,17 @@ TEMPLATES = [
         },
     },
 ]
+
+DATABASES = {
+    "default": {
+        "ENGINE": env.str("DB_ENGINE"),
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASS"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": 5432,
+    }
+}
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -178,8 +189,8 @@ INTERNAL_IPS = [
 # smtp
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "hubert.nills@gmail.com"
-EMAIL_HOST_PASSWORD = "e.mT79_g`%S8y&+8"
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 
 CELERY_BROKER_URL = "amqp://127.0.0.1:5672"

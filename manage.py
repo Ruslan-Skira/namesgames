@@ -6,37 +6,11 @@ import logging
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-import logging.config
-#
-# LOGGING_CONFIG = None
-# logging.config.dictConfig({
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'console': {
-#             # exact format is not important, this is the minimum information
-#             'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'console',
-#         },
-#     },
-#     'loggers': {
-#         # root logger
-#         '': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#     },
-# })
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'namesgames.settings.staging')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'namesgames.settings.dev')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

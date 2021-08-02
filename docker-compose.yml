@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000 --settings=namesgames.settings.prod
+    command: python manage.py runserver 127.0.0.1:8000 --settings=namesgames.settings.dev
     volumes:
       - .:/opt/app
     ports:

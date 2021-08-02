@@ -48,15 +48,11 @@ LOGGING = {
 # logging.config.dictConfig(LOGGING)
 # TOKEN_FILE = 'scraping/token.pickle'
 # NAMESGAMES_ADDRESS = 'namesgames.com'
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "namesgames",
-        "USER": "postgres",
-        "PASSWORD": "password",
-        "HOST": "localhost",
-        "PORT": 5432,
-    }
-}
+
+# read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+# 'default': env.db(),
+
+
+
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
