@@ -1,0 +1,146 @@
+def tl(**kwargs):
+	**kwargs.item()
+def tl(**kwargs):
+	kwargs.item()
+tl(k=2)
+def tl(**kwargs):
+	kwargs.items()
+tl(k=2)
+def tl(**kwargs):
+	return kwargs.items()
+tl(k=2)
+help: 'wtf'
+help
+nono:'ww'
+nono
+type(nono:32)
+type(nono: ]32)
+type(nono: 32)
+type(nono: 'df')
+asdf: 23
+s = asdf: 23
+nono()
+ssdfgdsf: 'asddasf'
+ssdfgdsf
+a: int = 0
+a
+if 1=1:
+if 1=1: 
+home = home2 = 3
+home
+home2
+class T:
+	pass
+hom = T = None
+hom
+type(hom)
+T
+type(T)
+class T:
+	k = 123
+hom = T = None
+hom
+type(hom)
+type(T)
+n = T()
+def firs():
+	x = 3
+	def second():
+		y = x ** x
+		return y
+	return second
+t = first()
+t = firs()
+t
+dir(t)
+t.__closure__
+t.__closure__[0]
+dir(t.__closure__[0])
+t.__closure__[0].cell_contents
+def w():
+	sd = 23
+dir(w)
+w.__closure__
+dir(w.__closure__)
+help(t.__closure__)
+pydock(t.__closure__)
+[spm, mk] = ['yd', 'dfs']
+spm
+mk
+a, b, c, d = 'spam'
+a
+b
+c
+d
+a, b, c, d = 'spamasdfasdfasdfasd'
+a, *b = 'spam'
+a
+b
+spam = ham = 'pum'
+spam
+haml
+ham
+spams += 42
+_
+print('df')
+ _
+_
+_ = print('23')
+_
+print('22')
+_
+_()
+type(_)
+_ = 2
+print(2)
+print(22)
+_
+m = 23
+_
+if 2 > 1: print(2222233)
+_
+mydict = {'eky': 23} 
+mydict.popitem('eky')
+mydict.pop('eky')
+mydicr
+mydict
+mydict = {'eky': 23} 
+if 'eky' in mydict: 
+	del mydict['eky']
+mydict
+from tasks import app
+app(2,3)
+from tasks import app
+app(2,3)
+from tasks import app
+app(2,3)
+from tasks import multiply
+from tasks import summa
+app(2,3)
+from tasks import summa
+summa(3,4)
+exit()
+A()
+str(A())
+print(A())
+def fun(f):
+	print('hi')
+def fun(f):
+	print(hi)
+	f()
+	print()
+a = print('123')
+a
+print(a)
+from @app.task
+def add(x, y):
+from tasks-with-dead-lock import add, div
+exit
+import pre_commit
+pre_commit
+asdf
+asd
+history
+import readline; print '\n'.join([str(readline.get_history_item(i)) for i in range(readline.get_current_history_length())])
+import readline
+readline.write_history_file('python_history.txt')

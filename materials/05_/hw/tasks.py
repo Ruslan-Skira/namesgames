@@ -16,15 +16,10 @@ answer = {}
 for v in line:
     answer[v] = line.count(v)
 
-#variant3
-{k:line.count(k) for k in line}
+# variant3
+{k: line.count(k) for k in line}
 
-
-
-
-
-
-Задача 2. 10 баллов
+"""Задача 2. 10 баллов
 
 тема Срезы и условие if.
 
@@ -32,19 +27,35 @@ for v in line:
 
 Если длинна строки меньше двух символов напечатать строку типа.
 
-'Ваша строка слишком короткая - СТРОКА ' . Через метод форматирования строк  с %.
+'Ваша строка слишком короткая - СТРОКА ' . Через метод форматирования строк  с %."""
 
+"""Задача
+1.
+10
+баллов
 
+Написать
+программу, которая
+подсчитывает
+количество
+символов
+в
+строке
 
-Задача 1. 10 баллов
+и
+формирует
+dict
+в
+котором
+key = буква, value = количество
+их
+в
+слове:
 
-Написать программу, которая подсчитывает количество символов в строке
+Входная
+строка: 'Hillel school'
 
-и формирует dict в котором key = буква, value= количество их в слове:
-
-Входная строка : 'Hillel school'
-
-Результат :  {'H': 1, 'i': 1, 'l': 3, 'e': 1, ' ': 1, 's': 1, 'c': 1, 'h': 1, 'o': 2}
+Результат: {'H': 1, 'i': 1, 'l': 3, 'e': 1, ' ': 1, 's': 1, 'c': 1, 'h': 1, 'o': 2}"""
 
 """Задача 3. 15 баллов
 Тема list и его методы. Строки и срезы.
@@ -52,15 +63,19 @@ for v in line:
 Ипользовать ''.format() для вывода строки и аргументов.
 Входные данные: ['bread', 'milk', 'kolbasa']
 Результат: 'Самое длинное название продукта kolbasa длинна 7 символов'"""
+
+
 def find_longest_word(words_list):
     word_len = []
     for n in words_list:
         word_len.append((len(n), n))
     word_len.sort()
     return word_len[-1][0], word_len[-1][1]
+
+
 result = find_longest_word(["PHP", "Exercises", "Backend"])
-print("\nLongest word: ",result[1])
-print("Length of the longest word: ",result[0])
+print("\nLongest word: ", result[1])
+print("Length of the longest word: ", result[0])
 
 """Задача 4. 5 баллов
 Пользователь водит свое имя. Возвращается тектс БОЛЬШОм и маленьком регистре. Использовать ''.format().
@@ -92,24 +107,25 @@ print(",".join(sorted(list(set(words)))))
 Удалить элемент из кортежа.
 """
 
-
 """
 Написать программу которая данный список кортежей переведет в список списков"""
+
 
 def test(lst_tuples):
     result = [list(el) for el in lst_tuples]
     return result
-lst_tuples = [(1,2), (2,3), (3,4)]
+
+
+lst_tuples = [(1, 2), (2, 3), (3, 4)]
 print("Original list of tuples:")
 print(lst_tuples)
 print("Convert the said list of tuples to a list of lists:")
 print(test(lst_tuples))
-lst_tuples = [(1,2), (2,3,5), (3,4), (2,3,4,2)]
+lst_tuples = [(1, 2), (2, 3, 5), (3, 4), (2, 3, 4, 2)]
 print("\nOriginal list of tuples:")
 print(lst_tuples)
 print("Convert the said list of tuples to a list of lists:")
 print(test(lst_tuples))
-
 
 """"функция range
 вывести в обратном порядке от 99 до -99 с шагом 3.
@@ -119,11 +135,22 @@ print(test(lst_tuples))
 напечатать в формате 'это ЧИСЛО делится без остатка на 3' использовать метода f' строки' """
 
 for i in range(99, -99, -3):
-    if i%3:
+    if i % 3:
         print(f'это {i}  делиться без остатка ')
-
 
 """
 даны два списка элементов если хоть один елемент совпадает отпринтить True 
 """
 
+
+def common_data(list1, list2):
+    result = False
+    for x in list1:
+        for y in list2:
+            if x == y:
+                result = True
+                return result
+
+
+print(common_data([1, 2, 3, 4, 5], [5, 6, 7, 8, 9]))
+print(common_data([1, 2, 3, 4, 5], [6, 7, 8, 9]))
