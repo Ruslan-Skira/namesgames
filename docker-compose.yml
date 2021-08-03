@@ -15,7 +15,7 @@ services:
       - redis
       - rabbitmq3
     env_file:
-      - ./.env.prod
+      - ./.env
   worker:
     build: .
     command: celery -A namesgames worker -l info
