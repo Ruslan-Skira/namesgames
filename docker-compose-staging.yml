@@ -1,42 +1,32 @@
-version: '3.8'
+version: '3.9'
 
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py runserver 127.0.0.1:8000 --settings=namesgames.settings.dev
-    volumes:
-      - .:/opt/app
+    command: python manage.py runserver 0.0.0.0:8000
+
     ports:
-      - "8000:8000"
+      - 8000:8000
     depends_on:
-      - db
       - redis
       - rabbitmq3
     env_file:
       - ./.env
-  worker:
+    networks:
+      - namesgames
+
+  celery:
     build: .
     command: celery -A namesgames worker -l info
-    volumes:
-      - .:/opt/app
+
     depends_on:
-      - web
-      - db
       - redis
       - rabbitmq3
+    networks:
+      - namesgames
 
-  db:
-    restart: always
-    image: postgres:12
-    environment:
-      POSTGRES_DB: namesgames
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - ~/Projects/linkedingame/namesgames/data:/var/lib/postgresql/data
   rabbitmq3:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -50,7 +40,15 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
       RABBITMQ_DEFAULT_VHOST: /
+    networks:
+      - namesgames
 
   redis:
     container_name: redis
     image: redis:3.2-alpine
+    networks:
+      - namesgames
+
+networks:
+  namesgames:
+    driver: bridge

@@ -48,3 +48,11 @@ LOGGING = {
 # logging.config.dictConfig(LOGGING)
 # TOKEN_FILE = 'scraping/token.pickle'
 # NAMESGAMES_ADDRESS = 'namesgames.com'
+
+# read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+# 'default': env.db(),
+
+
+
+
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
