@@ -62,7 +62,7 @@ class User(SoftDeletionModel, AbstractUser):
     position = models.CharField(max_length=50, blank=True)
     birthday = models.DateField(blank=True, null=True)
     is_company_owner = models.BooleanField(
-        _("User could CRUD company users"), default=False
+        _("Is company Owner"), default=False
     )
     phone_number = models.CharField(
         validators=[phone_regex()], max_length=17, blank=True
