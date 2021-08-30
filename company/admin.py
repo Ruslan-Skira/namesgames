@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Company
-from .forms import CompanyForm
+from company.models import Company
+from company.forms import CompanyForm
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -20,6 +20,13 @@ class CompanyAdmin(admin.ModelAdmin):
         obj.hard_delete()
 
     list_display = ['name', 'slug']
+
+    # form = CompanyForm
+    # fieldsets = (
+    #     (None, {
+    #         'fields': ('name', 'slug',),
+    #     }),
+    # )
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         if request.user.is_superuser:
