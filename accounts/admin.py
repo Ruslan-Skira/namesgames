@@ -2,7 +2,6 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
 from .models import User
@@ -54,15 +53,14 @@ class UserChangeForm(forms.ModelForm):
 
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
-    # inlines = (EmployeeInline,)
     list_display = ('email', 'is_company_owner', 'password')
     list_filter = ('is_company_owner',)
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'company')}),
-        ('Permissions', {'fields': ('is_superuser', 'is_company_owner')}),
+        (None, {'fields': ('email', 'password1', 'password2', 'company', 'user_permissions', 'groups')}),
+        ('Permissions', {'fields': ('is_superuser', 'is_company_owner', 'is_staff')}),
         ('Personal information', {
             'classes': ('collapse',),
-            'fields': ('picture_url', 'position', 'birthday', 'phone_number', 'skype', 'deleted_at')
+            'fields': ('first_name', 'last_name', 'picture_url', 'position', 'birthday', 'phone_number', 'skype', 'deleted_at')
         }),
 
     )
@@ -75,11 +73,44 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'company')
     ordering = ('company',)
     filter_horizontal = ()
+    # inlines = (UserProfileInline,)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj=None, **kwargs)
+        is_superuser = request.user.is_superuser
+        disabled_fields = set()
+
+        if not is_superuser:
+            disabled_fields |= {
+                'email',
+                'is_superuser',
+                'is_company_owner'
+                'user_permissions',
+            }
+        # Prevent non-superuser from editing their own permissions
+        if (
+                not is_superuser
+                and obj is not None
+                and obj == request.user
+        ):
+            disabled_fields |= {
+                'is_staff',
+                'is_superuser',
+                'is_company_owner'
+                'groups',
+                'user_permissions',
+            }
+        for f in disabled_fields:
+            if f in form.base_fields:
+                form.base_fields[f].disabled = True
+
+        return form
 
     class Meta:
         model = User
+        fields=['__all__']
 
 
 # Re-register UserAdmin
 admin.site.register(User, UserAdmin)
-admin.site.unregister(Group)
+# admin.site.unregister(Group)
