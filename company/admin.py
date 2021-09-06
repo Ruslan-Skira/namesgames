@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from company.forms import CompanyAddForm, CompanyChangeForm
+from company.forms import CompanyEditForm
 from company.models import Company
 
 
@@ -11,9 +11,10 @@ class CompanyAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug', 'company_owner']
     change_form_template = 'admin/change_company_form.html'
 
+    @admin.display(description='Company owner email')
     def company_owner(self, instance) -> str:
         """
-            method return company owner object.
+            method return company owner email.
         """
         try:
             company_owner_email = instance.employees.filter(
@@ -37,18 +38,20 @@ class CompanyAdmin(admin.ModelAdmin):
         obj.hard_delete()
 
     def add_view(self, request, form_url='', extra_context=None):
+        """Rewriting add view """
+
         self.readonly_fields = ('employees_count', 'deleted_at')
-        self.form = CompanyAddForm
+        self.form = CompanyEditForm
         return super().add_view(request, form_url='', extra_context=None)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        self.form = CompanyAddForm
-        # self.form = CompanyChangeForm
-        if not request.user.is_superuser:
-            self.readonly_fields = ('name', 'slug', 'employees_count', 'deleted_at', 'company_owner')
-        # self.list_display = ('name', 'slug', 'employees_count', 'deleted_at', 'company_owner')
+        """Rewriting change view """
+
+        self.readonly_fields = ('company_owner',)
+        self.list_display = ('name', 'slug', 'employees_count', 'deleted_at')
+
         extra_context = extra_context or {}
-        extra_context['company_owner'] = 'self.company_owner(object_id)'
+        extra_context['company_owner_test'] = 'self.company_owner(object_id)'
         self.fields = ('name', 'slug', 'employees_count', 'deleted_at', 'company_owner')
         return super().change_view(request, object_id, form_url='', extra_context=extra_context)
 

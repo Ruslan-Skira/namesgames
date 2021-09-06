@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from .models import Company
 
 
-class CompanyAddForm(forms.ModelForm):
+class CompanyEditForm(forms.ModelForm):
     """
     Additional form for company-owner during adding and editing Company model
 
@@ -18,20 +18,6 @@ class CompanyAddForm(forms.ModelForm):
             user_model = get_user_model()
             user_model.objects.create(email=company_owner, company_id=1)
         return super().save(commit=commit)
-
-    class Meta:
-        model = Company
-        fields = '__all__'
-
-
-class CompanyChangeForm(forms.ModelForm):
-    """
-    Сustrom model form editing Company model
-
-    """
-
-    company_owner = forms.CharField()
-
 
     class Meta:
         model = Company
