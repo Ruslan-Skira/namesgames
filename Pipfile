@@ -120,6 +120,7 @@ pytest-cov = "*"
 mock = "*"
 cffi = "*"
 mypy = "*"
+sendgrid = "*"
 
 [requires]
 python_version = "3.8"

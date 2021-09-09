@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from .models import Company
+from company.models import Company
+from company.tasks import send_confirmation_email
 
 
 class CompanyEditForm(forms.ModelForm):
@@ -17,6 +18,7 @@ class CompanyEditForm(forms.ModelForm):
         if company_owner and self.instance:
             user_model = get_user_model()
             user_model.objects.create(email=company_owner, company_id=1)
+            send_confirmation_email(company_owner)
         return super().save(commit=commit)
 
     class Meta:
