@@ -2,30 +2,32 @@
 Send emails using SendGrid API.
 """
 import logging
+import threading
+from smtplib import SMTPException
 
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.core.mail.backends.base import BaseEmailBackend
 from python_http_client import exceptions
 from python_http_client.client import Response
-from sendgrid import SendGridAPIClient
+from sendgrid import Mail, SendGridAPIClient
 
 log = logging.getLogger(__name__)
 
 
-class SendGridEmailProvider:
+class EmailSendgridBackend(BaseEmailBackend):
     """
     Send emails via SendGrid API using a helper class, 'SendGidAPIClient'.
     """
 
-    def __init__(
-            self,
-            to_email,
-            to_name,
-            from_email,
-            from_name,
-            reply_to,
-            subject,
-            api_key,
-            templates_resolver,
-            context=None):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, fail_silently=False, **kwargs):
         """
         Instance should contain all the attributes necessary to send an email.
 
@@ -44,18 +46,35 @@ class SendGridEmailProvider:
             api_key (str): General SendGrid API key, necessary to perform authorized  requests.
             templates_resolver (SendGridTemplateResolver): an object of SendGridTemplateResolver class,
                 which will be used to define the SendGrid template id to use.
+            content (str): body of the message.
         """
-        self.to_email = to_email
-        self.to_name = to_name
-        self.from_email = from_email
-        self.from_name = from_name
-        self.reply_to = reply_to
-        self.subject = subject
-        self.api_key = api_key
-        self.templates_resolver = templates_resolver
-        self.context = context
+        super().__init__(fail_silently=fail_silently)
+        self.api_key = settings.SENDGRID_API_KEY
+        self._lock = threading.RLock()
 
-    def send_sendgrid_email(self, mail: str) -> Response:
+    @staticmethod
+    def personalize_email(e_message: EmailMessage) -> Mail:
+        """
+        User set custom parameters to send email with using SendGrid API.
+        Returns:
+            mail(sendgrid.helpers.mail.Mail): Mail object containing
+                all the necessary email parameters, i.e. message per se.
+
+        """
+        if e_message:
+            mail = Mail(
+                from_email=settings.EMAIL_ADMIN,
+                to_emails=e_message.to[0],
+                subject=e_message.subject,
+                html_content=e_message.body,
+            )
+
+            log.info(f"A python-sendgrid Mail object has been created: {mail}")
+
+            return mail
+        log.info("The django EmailMessage object are not created")
+
+    def send_sendgrid_email(self, mail: Mail) -> Response:
 
         """
         Send an email using a 'sendgrid' helper class,  'SendGidAPIClient'.
@@ -72,18 +91,51 @@ class SendGridEmailProvider:
         Returns:
             response (python_http_client.client.Response): Response object.
         """
+
         try:
-            client = SendGridAPIClient(api_key=self.api_key)
-            response = client.send(mail)
+            sg_client = SendGridAPIClient(api_key=self.api_key)
+            response = sg_client.send(mail)
+
             if response.status_code == 202:
                 log.debug("Successfully sent an email using SendGrid API.")
             else:
-                log.error(f"Failed to send and email using SendGrid API. "
-                          f"Status code: {response.status_code}. "
-                          f"Response body: {response.body}. "
-                          f"Headers: {response.headers}"
-                          )
+                log.error(
+                    f"Failed to send and email using SendGrid API. "
+                    f"Status code: {response.status_code}. "
+                    f"Response body: {response.body}. "
+                    f"Headers: {response.headers}"
+                )
             return response
         except exceptions.HTTPError as e:
-            log.error(" An error occurred while sending an email using SendGrid API. "
-                      f"Error message: {e}")
+            if not self.fail_silently:
+                log.error(
+                    " An error occurred while sending an email using SendGrid API. "
+                    f"Error message: SMTPException {e} "
+                )
+                raise SMTPException
+            else:
+                log.error(
+                    " An error occurred while sending an email using SendGrid API. "
+                    f"Error message: {e}"
+                )
+
+    def send_messages(self, email_messages):
+        """
+        Send one or more Mail object and return the number of email messages sent.
+        Args:
+            email_messages (list): list of EmailMessage objects
+
+        Returns(int): amount of sent emails.
+
+        """
+
+        num_sent = 0
+        if not email_messages:
+            return 0
+        elif email_messages:
+            for e_message in email_messages:
+                mail = self.personalize_email(e_message)
+                sent = self.send_sendgrid_email(mail)
+                if sent:
+                    num_sent += 1
+        return num_sent

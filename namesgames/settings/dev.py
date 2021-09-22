@@ -1,6 +1,5 @@
 from .base import *  # NOQA
 
-
 DEBUG = True
 LOGGING_CONFIG = None
 
@@ -53,9 +52,9 @@ LOGGING = {
 # 'default': env.db(),
 
 
-
-
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 # Emails get sent to the console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = "core.email.sendgrid_email.EmailSendgridBackend"
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

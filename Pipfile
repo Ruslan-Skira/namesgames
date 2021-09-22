@@ -121,6 +121,7 @@ mock = "*"
 cffi = "*"
 mypy = "*"
 sendgrid = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"
