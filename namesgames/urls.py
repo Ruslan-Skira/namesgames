@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.urls import path
 from django.urls import re_path
@@ -61,6 +62,10 @@ urlpatterns = [
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", include("dj_rest_auth.registration.urls")),
     path("me/", include("accounts.urls")),
+    path("reset_password/", auth_views.PasswordResetView.as_view(), name="reset_password"),
+    path("reset_password_sent/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path("reset/<uidb64>/<token>", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path("reset_password_complete/", auth_views.PasswordResetView.as_view(), name="password_reset"),
 ]
 
 router.register(r"api/v1/admin/employees", AdminEmployeeViewSet, basename='employees')
