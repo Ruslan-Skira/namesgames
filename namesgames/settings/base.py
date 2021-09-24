@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "django_extensions",
     "django_filters",
+    "django_rest_passwordreset",
 ]
 
 SITE_ID = 1

@@ -61,6 +61,7 @@ urlpatterns = [
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", include("dj_rest_auth.registration.urls")),
     path("me/", include("accounts.urls")),
+    path("api/password_reset/", include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
 
 router.register(r"api/v1/admin/employees", AdminEmployeeViewSet, basename='employees')
