@@ -72,7 +72,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email', 'company')
+    search_fields = ('email', 'company__name')
     ordering = ('company',)
     filter_horizontal = ()
 

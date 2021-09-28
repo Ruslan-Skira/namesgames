@@ -9,7 +9,7 @@ from company.tests.factories.company_factory import CompanyFactory
 
 class Command(BaseCommand):
     """
-    Command create fake company,  owner and 5 employees.
+    Command create fake company, owner and 1-25 employees.
     """
 
     help = 'Fill up the database by fake data'

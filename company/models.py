@@ -47,3 +47,4 @@ class Company(SoftDeletionModel):
 
     class Meta:
         ordering = ["last_parsed_at"]
+        verbose_name_plural = "Companies"
