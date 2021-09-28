@@ -56,3 +56,7 @@ _example_ git commit -m "NAM-10 change permissions: + implemented new permission
 
 CELERY
 start: celery -A tasks worker — loglevel=INFO
+
+**Staging**:
+1. (run using .env file) -> "docker-compose -f docker-compose-staging.yml -f docker-compose-staging.env_file.yml up"
+2. (run using docker environment) -> "docker-compose -f docker-compose-staging.yml -f docker-compose-staging.env_var.yml up"
