@@ -1,0 +1,35 @@
+version: 2.1
+
+workflows:
+  stage:
+    jobs:
+      - build-test-deploy:
+          # run when changed next branches only
+          filters:
+            branches:
+              only:
+                - master
+
+jobs:
+  build-test-deploy:
+    # execute on ubuntu
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      # checkout to the branch that triggered the workflow
+      - checkout
+      # build and run tests
+      - run:
+          name: Build and test
+          command: docker-compose -f docker-compose-staging.yml -f docker-compose-staging.env_var.yml run web python manage.py test --noinput
+      # deploy to azure vps
+      - run:
+          name: Deploy on vps
+          command: |
+            ssh $KAMATERA_USER@$KAMATERA_HOST "
+            cd namesgames &&
+            git checkout <<pipeline.git.branch>> &&
+            git pull origin <<pipeline.git.branch>> &&
+            docker-compose -f docker-compose-staging.yml -f docker-compose-staging.env_file.yml stop &&
+            docker-compose -f docker-compose-staging.yml -f docker-compose-staging.env_file.yml up --build -d
+            "

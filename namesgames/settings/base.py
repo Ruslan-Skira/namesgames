@@ -10,7 +10,7 @@ env = environ.Env(
 )
 
 # reading .env file
-environ.Env.read_env(env_file=base(".env"))  # reading .env file
+environ.Env.read_env(env_file=env.str('ENV_PATH', base(".env")))  # reading .env file
 
 # False if not in os.environ
 DEBUG = env("DEBUG")
