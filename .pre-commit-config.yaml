@@ -1,3 +1,4 @@
+# https://habr.com/ru/post/503270/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v2.5.0"
@@ -45,3 +46,4 @@ repos:
         entry: "bash tests.sh"
         language: system
         verbose: true
+
