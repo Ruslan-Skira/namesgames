@@ -1,6 +1,9 @@
 from pathlib import Path
 
 import environ
+from dotenv import load_dotenv
+
+load_dotenv()
 
 base = environ.Path(__file__) - 3  # three folders back (/a/b/c/ - 3 = /)
 env = environ.Env(
@@ -214,7 +217,7 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
-# SESSION_ENGINE = 'redis_sessions.session'
+# SESSION_ENGINE = 'python manage.py runserver 127.0.0.1:8000redis_sessions.session'
 # SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 # SESSION_SAVE_EVERY_REQUEST = True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -249,3 +252,4 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

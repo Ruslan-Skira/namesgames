@@ -17,6 +17,12 @@ class Company(SoftDeletionModel):
     )
     last_parsed_at = models.DateTimeField(auto_now_add=True, help_text="las-modified")
     employees_count = models.PositiveIntegerField(default=0)
+    # owner = models.ForeignKey(
+    #                                "accounts.User",
+    #                                related_name="owners",
+    #                                on_delete=models.SET_NULL,
+    #                                null=True,
+    #                                )
 
     def __str__(self) -> str:
         return self.name

@@ -1,6 +1,5 @@
 from .base import *  # NOQA
 
-
 DEBUG = True
 LOGGING_CONFIG = None
 
@@ -51,8 +50,6 @@ LOGGING = {
 
 # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
 # 'default': env.db(),
-
-
 
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
